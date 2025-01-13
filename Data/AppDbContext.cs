@@ -9,6 +9,8 @@ public class AppDbContext : DbContext
     public DbSet<CanvasModel> CanvasModels { get; set; } 
     public DbSet<ReservationModel> Reservations { get; set; } 
 
+    public DbSet<ClientModel> ClientModels { get; set; }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,5 +36,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ReservationModel>()
             .Property(r => r.ClientPhone)
             .HasMaxLength(50); // Définit une longueur maximale pour ClientPhone
+
+        modelBuilder.Entity<ClientModel>()
+            .Property(C => C.Id)
+            .ValueGeneratedOnAdd();
     }
 }
