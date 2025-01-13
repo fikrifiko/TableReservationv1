@@ -20,7 +20,7 @@ namespace Table_Reservation.Controllers
         }
 
         // Endpoint pour enregistrer les tables
-        
+
         [HttpPost]
         public async Task<IActionResult> SaveTables([FromBody] List<TableModel> tables)
         {
@@ -93,6 +93,25 @@ namespace Table_Reservation.Controllers
 
             return Ok("Table supprimée avec succès.");
         }
+
+
+        [HttpPost("reserve")]
+        public IActionResult ReserveTable([FromBody] ReservationModel reservation)
+        {
+            if (reservation == null)
+                return BadRequest("Les données de réservation sont invalides.");
+
+            if (reservation.ReservationDate < DateTime.Now)
+                return BadRequest("La date de réservation ne peut pas être dans le passé.");
+
+            // Vérifiez les conflits de réservation ou tout autre logique métier
+
+            _context.Reservations.Add(reservation);
+            _context.SaveChanges();
+
+            return Ok("Réservation effectuée avec succès !");
+        }
+
 
     }
 }

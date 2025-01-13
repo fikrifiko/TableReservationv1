@@ -15,5 +15,6 @@ namespace Table_Reservation.Models
         public int Height { get; set; }
         public int Seats { get; set; }
         public bool Rotated { get; set; }
-    }
+        public bool Reserved {  get; set; }
+        }
 }

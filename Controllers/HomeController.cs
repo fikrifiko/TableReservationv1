@@ -18,6 +18,8 @@ namespace Table_Reservation.Controllers
             return View();
         }
 
+
+
         public IActionResult Privacy()
         {
             return View();
