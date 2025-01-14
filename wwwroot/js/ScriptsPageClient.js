@@ -48,7 +48,7 @@ function drawTable(table) {
     ctx.font = "14px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(`Table ${table.id}`, 0, 0);
+    ctx.fillText(table.name || `Table ${table.id}`, 0, 0);
 
     ctx.restore();
 }
@@ -155,7 +155,7 @@ function populateStartTimeDropdown() {
 
 // Fonction pour ouvrir la fenêtre modale
 function openReservationModal(table) {
-    selectedTableId = table.id;
+    selectedTablename = table.name;
 
     const selectedDate = document.getElementById("selectDate").value;
     if (!selectedDate) {
@@ -164,7 +164,7 @@ function openReservationModal(table) {
     }
 
     // Renseigner les informations dans la modale
-    document.getElementById("tableId").textContent = table.id;
+    document.getElementById("tablename").textContent = table.name
     document.getElementById("displayReservationDate").textContent = selectedDate;
 
     // Afficher la modale

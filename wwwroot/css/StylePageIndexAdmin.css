@@ -21,6 +21,14 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+<style >
+.modal.fade.show {
+    display: flex !important;
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre horizontalement */
+}
+
+</style >
 /* Titre */
 h1 {
     color: #007bff;

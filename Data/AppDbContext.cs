@@ -40,5 +40,11 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ClientModel>()
             .Property(C => C.Id)
             .ValueGeneratedOnAdd();
+
+
+
+
+
+
     }
 }

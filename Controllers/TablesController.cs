@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,6 +47,27 @@ namespace Table_Reservation.Controllers
 
             return Ok("Tables enregistrées avec succès.");
         }
+
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateTableName(int id, [FromBody] TableUpdateDto tableUpdate)
+        {
+            var table = _context.Tables.FirstOrDefault(t => t.Id == id);
+            if (table == null)
+            {
+                return NotFound(new { message = "Table non trouvée." });
+            }
+
+            table.Name = tableUpdate.Name; // Met à jour le nom
+            _context.SaveChanges();
+            return Ok(new { message = "Nom de la table mis à jour." });
+        }
+
+        public class TableUpdateDto
+        {
+            public string Name { get; set; }
+        }
+
 
 
 
@@ -111,6 +133,8 @@ namespace Table_Reservation.Controllers
 
             return Ok("Réservation effectuée avec succès !");
         }
+
+
 
 
     }
