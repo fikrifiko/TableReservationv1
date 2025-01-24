@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Stripe;
 using Stripe.Checkout;
 
@@ -41,8 +42,9 @@ namespace Table_Reservation.Controllers
                             Currency = "eur",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
-                                Name = $"Réservation Table {request.TableId}",
-                            },
+                        Name = $"Réservation {request.TableName}",
+
+        },
                             UnitAmount = 100,
                         },
                         Quantity = 1,
@@ -54,6 +56,7 @@ namespace Table_Reservation.Controllers
                 Metadata = new Dictionary<string, string>
                 {
                     { "tableId", request.TableId.ToString() },
+                    //{ "TableName", request.TableName },
                     { "clientName", request.ClientName },
                     { "clientEmail", request.ClientEmail },
                     { "clientPhone", request.ClientPhone }
@@ -86,6 +89,7 @@ namespace Table_Reservation.Controllers
                     var reservation = new ReservationModel
                     {
                         TableId = int.Parse(session.Metadata["tableId"]),
+                        TableName = session.Metadata["TableName"],
                         ClientName = session.Metadata["clientName"],
                         ClientEmail = session.Metadata["clientEmail"],
                         ClientPhone = session.Metadata["clientPhone"],
@@ -179,6 +183,8 @@ namespace Table_Reservation.Controllers
     {
         public int TableId { get; set; }
         public string ClientName { get; set; }
+        public string TableName { get; set; } // Nouveau champ pour le nom de la table
+
         public string ClientEmail { get; set; }
         public string ClientPhone { get; set; }
     }

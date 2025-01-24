@@ -134,7 +134,7 @@
             height: Math.round(height),
             seats: seats,
             rotated: rotated,
-            name: name
+            name: "Table",
         }));
 
         fetch('/api/tables', {
@@ -264,6 +264,8 @@
                 },
                 body: JSON.stringify({ name: newName }),
             })
+
+
                 .then(response => {
                     if (response.ok) {
                         drawTables();
