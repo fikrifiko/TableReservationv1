@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Table_Reservation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250114015957_add-migration TableModel")]
-    partial class addmigrationTableModel
+    [Migration("20250125013504_NomDeMigration")]
+    partial class NomDeMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,10 @@ namespace Table_Reservation.Migrations
 
                     b.Property<int>("TableId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

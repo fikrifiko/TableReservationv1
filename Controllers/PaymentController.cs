@@ -56,7 +56,7 @@ namespace Table_Reservation.Controllers
                 Metadata = new Dictionary<string, string>
                 {
                     { "tableId", request.TableId.ToString() },
-                    //{ "TableName", request.TableName },
+                    { "TableName", request.TableName },
                     { "clientName", request.ClientName },
                     { "clientEmail", request.ClientEmail },
                     { "clientPhone", request.ClientPhone }
@@ -138,6 +138,7 @@ namespace Table_Reservation.Controllers
             var reservation = new ReservationModel
             {
                 TableId = int.Parse(session.Metadata["tableId"]),
+                TableName = session.Metadata["TableName"],
                 ClientName = session.Metadata["clientName"],
                 ClientEmail = session.Metadata["clientEmail"],
                 ClientPhone = session.Metadata["clientPhone"],

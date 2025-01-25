@@ -41,6 +41,8 @@ public class ReservationController : Controller
             var reservation = new ReservationModel
             {
                 TableId = int.Parse(session.Metadata["tableId"]),
+                                TableName = session.Metadata["TableName"],
+
                 ClientName = session.Metadata["clientName"],
                 ClientEmail = session.Metadata["clientEmail"],
                 ClientPhone = session.Metadata["clientPhone"],

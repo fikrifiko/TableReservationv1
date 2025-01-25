@@ -5,14 +5,14 @@
 namespace Table_Reservation.Migrations
 {
     /// <inheritdoc />
-    public partial class addmigrationTableModel : Migration
+    public partial class NomDeMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Name",
-                table: "Tables",
+                name: "TableName",
+                table: "Reservations",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -22,8 +22,8 @@ namespace Table_Reservation.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Name",
-                table: "Tables");
+                name: "TableName",
+                table: "Reservations");
         }
     }
 }

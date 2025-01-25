@@ -1,293 +1,189 @@
-﻿document.addEventListener("DOMContentLoaded", async () => {
-    const canvas = document.getElementById("roomCanvas");
-    const ctx = canvas.getContext("2d");
-    const sizeSelector = document.getElementById("canvasSizeSelect");
-    const modifyNameButton = document.getElementById("modifyTableNameButton");
-    const saveNameButton = document.getElementById("saveTableNameButton");
-    const addTableButton = document.getElementById("addTableButton");
-    const deleteTableButton = document.getElementById("deleteTableButton");
-    const saveTablesButton = document.getElementById("saveButton");
+﻿const canvas = document.getElementById("roomCanvas");
+const ctx = canvas.getContext("2d");
+let tables = [];
+let selectedTableId = null;
 
-    document.getElementById('rotateTableButton').addEventListener('click', rotateTable);
+// Fonction pour afficher ou masquer le message de chargement
+function setLoadingMessage(visible) {
+    document.getElementById("loadingMessage").style.display = visible ? "block" : "none";
+}
+// Fonction pour dessiner une table sur le canvas
+function drawTable(table) {
+    ctx.save();
 
+    // Déplacer le contexte au centre de la table
+    ctx.translate(table.x + table.width / 2, table.y + table.height / 2);
 
-    const saveCanvasButton = document.getElementById("saveCanvasButton");
-
-    let tables = [];
-    let draggingTable = null; // Table en cours de déplacement
-    let selectedTable = null; // Table actuellement sélectionnée
-
-    // Fonction pour dessiner les tables
-    function drawTables() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        tables.forEach(table => {
-            ctx.save();
-            ctx.translate(table.x + table.width / 2, table.y + table.height / 2);
-
-            if (table.rotated) {
-                ctx.rotate(Math.PI / 2);
-            }
-
-            ctx.fillStyle = table.selected ? "gray" : "blue";
-            ctx.fillRect(-table.width / 2, -table.height / 2, table.width, table.height);
-            ctx.restore();
-
-            ctx.fillStyle = "white";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(table.name || `Table ${table.id}`, table.x + table.width / 2, table.y + table.height / 2 - 10);
-            ctx.fillText(`(${table.seats} P)`, table.x + table.width / 2, table.y + table.height / 2 + 10);
-        });
+    // Si la table est tournée, appliquer une rotation
+    if (table.rotated) {
+        ctx.rotate(Math.PI / 2);
     }
 
-    // Charger les tables depuis la base de données
-    function loadTables() {
-        fetch('/api/tables')
-            .then(response => response.json())
-            .then(data => {
-                tables = data.map(table => ({
-                    ...table,
-                    selected: false,
-                }));
-                drawTables();
-            })
-            .catch(error => console.error("Erreur lors du chargement des tables :", error));
-    }
+    // Dessiner la table (rectangle)
+    ctx.fillStyle = table.reserved ? "red" : "green";
+    ctx.fillRect(-table.width / 2, -table.height / 2, table.width, table.height);
 
-    // Fonction pour redimensionner le canvas
-    function resizeCanvas(scale) {
-        const originalWidth = 800;
-        canvas.width = originalWidth * scale;
-        canvas.height = 600;
-        drawTables();
-    }
+    // Récupérer le nom de la table
+    const TableName = table.name || `Table ${table.id}`;
 
-    // Gestion du redimensionnement via le sélecteur
-    sizeSelector.addEventListener("change", (event) => {
-        const selectedSize = event.target.value;
+    // Dessiner le texte centré sur la table
+    ctx.fillStyle = "black";
+    ctx.font = "14px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(TableName, 0, 0); // 0, 0 est le centre après translation
 
-        if (selectedSize === "1") {
-            canvas.width = 800; // Taille par défaut
-            canvas.height = 600;
-        } else if (selectedSize === "1.50") {
-            canvas.width = 1200; // Taille moyenne
-            canvas.height = 600;
-        } else if (selectedSize === "1.90") {
-            canvas.width = 1520; // Taille large
-            canvas.height = 600;
-        }
+    ctx.restore();
+}
 
-        console.log(`Canvas dimensions: ${canvas.width}x${canvas.height}`);
-        drawTables();
-    });
-
-    // Ajouter une nouvelle table
-    addTableButton.addEventListener("click", () => {
-        const seats = parseInt(document.getElementById("seatsInput").value);
-        if (seats < 2 || seats > 10 || seats % 2 !== 0) {
-            alert("Veuillez entrer un nombre valide (2, 4, 6, 8 ou 10).");
-            return;
-        }
-        const newTable = {
-            id: tables.length + 1,
-            name: `Table ${tables.length + 1}`,
-            x: 100,
-            y: 100,
-            width: 50 * (seats / 2),
-            height: 50,
-            seats: seats,
-            rotated: false,
-            selected: false,
-        };
-        tables.push(newTable);
-        drawTables();
-    });
+// Fonction pour redessiner toutes les tables
+function drawTables() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Efface le canvas
+    tables.forEach(table => drawTable(table)); // Dessine chaque table
+}
+// Fonction pour charger les tables en fonction de la date sélectionnée
+function loadTablesForDate(date) {
+    setLoadingMessage(true);
+    fetch(`/api/tables?date=${date}`)
+        .then(response => response.json())
+        .then(data => {
+            tables = data.map(table => ({
+                ...table,
+                x: table.x || 0,
+                y: table.y || 0,
+                width: table.width || 50,
+                height: table.height || 50,
+            }));
+            console.log("Tables chargées :", tables);
+            drawTables(); // Dessine les tables après le chargement
 
 
-    /** Faire pivoter la table sélectionnée */
-    function rotateTable() {
-        if (!selectedTable) {
-            alert('Veuillez sélectionner une table pour la faire pivoter.');
-            return;
-        }
-        selectedTable.rotated = !selectedTable.rotated;
-        drawTables();
-    }
-
-    // Supprimer une table sélectionnée
-    deleteTableButton.addEventListener("click", () => {
-        if (!selectedTable) {
-            alert("Veuillez sélectionner une table à supprimer.");
-            return;
-        }
-        tables = tables.filter(table => table !== selectedTable);
-        selectedTable = null;
-        drawTables();
-    });
-
-    // Sauvegarder les tables dans la base de données
-    saveTablesButton.addEventListener("click", () => {
-        const dataToSend = tables.map(({ x, y, width, height, seats, rotated }) => ({
-            x: Math.round(x),
-            y: Math.round(y),
-            width: Math.round(width),
-            height: Math.round(height),
-            seats: seats,
-            rotated: rotated,
-            name: "Table",
-        }));
-
-        fetch('/api/tables', {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dataToSend),
         })
-            .then(response => {
-                if (response.ok) alert("Tables enregistrées avec succès !");
-                else throw new Error("Erreur lors de l'enregistrement.");
-            })
-            .catch(error => alert(`Erreur : ${error.message}`));
-    });
-
-    // Charger les dimensions du canvas depuis la base de données
-    async function loadCanvasSize() {
-        try {
-            const response = await fetch('/api/canvas/get');
-            const data = await response.json();
-            if (data.width && data.height) {
-                canvas.width = data.width;
-                canvas.height = data.height;
-                return { width: data.width, height: data.height };
-            }
-            throw new Error("La taille du canvas n'est pas disponible.");
-        } catch (error) {
-            console.error("Erreur lors du chargement de la taille du canvas :", error);
-            return { width: 800, height: 600 };
+        .catch(error => console.error("Erreur lors du chargement des tables :", error))
+        .finally(() => setLoadingMessage(false));
+}
+// Initialisation de la page et gestion de la sélection de la date
+document.addEventListener("DOMContentLoaded", function () {
+    const selectDateInput = document.getElementById("selectDate");
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    const minDate = tomorrow.toISOString().split("T")[0];
+    selectDateInput.setAttribute("min", minDate);
+    selectDateInput.addEventListener("change", function () {
+        const selectedDate = this.value;
+        if (!selectedDate) {
+            alert("Veuillez sélectionner une date.");
+            return;
         }
-    }
-
-    // Sauvegarder les dimensions du canvas
-    saveCanvasButton.addEventListener("click", () => {
-        const dataToSend = {
-            width: canvas.width,
-            height: canvas.height,
-        };
-
-        fetch('/api/canvas/save', {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dataToSend),
+        loadTablesForDate(selectedDate);
+    });
+    // Charger les dimensions du canvas
+    setLoadingMessage(true);
+    fetch("/api/canvas/get")
+        .then(response => response.json())
+        .then(data => {
+            canvas.width = data.width || 800;
+            canvas.height = data.height || 600;
+            drawTables(); // Dessine les tables après avoir mis à jour les dimensions
         })
-            .then(response => {
-                if (response.ok) {
-                    alert("Dimensions du canvas enregistrées avec succès !");
-                } else {
-                    throw new Error("Erreur lors de l'enregistrement des dimensions.");
-                }
-            })
-            .catch(error => {
-                console.error("Erreur :", error.message);
-                alert(`Erreur : ${error.message}`);
-            });
-    });
-
-    // Gestion de la sélection d'une table
-    canvas.addEventListener("mousedown", (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-
-        const clickedTable = tables.find(
-            table =>
-                mouseX >= table.x &&
-                mouseX <= table.x + table.width &&
-                mouseY >= table.y &&
-                mouseY <= table.y + table.height
-        );
-
-        if (clickedTable) {
-            draggingTable = clickedTable;
-            selectedTable = clickedTable;
-            tables.forEach(table => (table.selected = false));
-            clickedTable.selected = true;
-        } else {
-            selectedTable = null;
-            tables.forEach(table => (table.selected = false));
-        }
-        drawTables();
-    });
-
-    canvas.addEventListener("mousemove", (e) => {
-        if (!draggingTable) return;
-        const rect = canvas.getBoundingClientRect();
-        draggingTable.x = e.clientX - rect.left - draggingTable.width / 2;
-        draggingTable.y = e.clientY - rect.top - draggingTable.height / 2;
-        drawTables();
-    });
-
-    canvas.addEventListener("mouseup", () => {
-        draggingTable = null;
-    });
-
-    canvas.addEventListener("mouseleave", () => {
-        draggingTable = null;
-    });
-
-    // Gestion du clic sur "Modifier le nom"
-    modifyNameButton.addEventListener("click", () => {
-        if (!selectedTable) {
-            alert("Veuillez sélectionner une table en cliquant dessus.");
-            return;
-        }
-
-        document.getElementById("tableNameInput").value = selectedTable.name || "";
-
-        const tableNameModal = new bootstrap.Modal(document.getElementById("tableNameModal"));
-        tableNameModal.show();
-    });
-
-    saveNameButton.addEventListener("click", () => {
-        const newName = document.getElementById("tableNameInput").value.trim();
-
-        if (!newName) {
-            alert("Veuillez entrer un nouveau nom pour la table.");
-            return;
-        }
-
-        if (selectedTable) {
-            selectedTable.name = newName;
-
-            fetch(`/api/tables/${selectedTable.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ name: newName }),
-            })
-
-
-                .then(response => {
-                    if (response.ok) {
-                        drawTables();
-                        alert(`Le nom de la table a été mis à jour en "${newName}".`);
-                        const tableNameModal = bootstrap.Modal.getInstance(document.getElementById("tableNameModal"));
-                        tableNameModal.hide();
-                    } else {
-                        return response.json().then(error => {
-                            throw new Error(error.message || "Erreur lors de la mise à jour.");
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error("Erreur :", error);
-                    alert(`Erreur lors de la sauvegarde dans la base de données : ${error.message}`);
-                });
-        }
-    });
-
-    // Charger les tables et dimensions au démarrage
-    const defaultCanvasSize = await loadCanvasSize();
-    canvas.width = defaultCanvasSize.width;
-    canvas.height = defaultCanvasSize.height;
-    loadTables();
+        .catch(error => console.error("Erreur lors du chargement des dimensions du canvas :", error))
+        .finally(() => setLoadingMessage(false));
+    populateStartTimeDropdown();
 });
+// Gestion des clics sur le canvas pour sélectionner une table
+canvas.addEventListener("click", event => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width; // Echelle horizontale
+    const scaleY = canvas.height / rect.height; // Echelle verticale
+    const mouseX = (event.clientX - rect.left) * scaleX;
+    const mouseY = (event.clientY - rect.top) * scaleY;
+    console.log(`Clique détecté : (${mouseX}, ${mouseY})`);
+    console.log("Tables disponibles :", tables);
+    const clickedTable = tables.find(
+        table =>
+            mouseX >= table.x &&
+            mouseX <= table.x + table.width &&
+            mouseY >= table.y &&
+            mouseY <= table.y + table.height
+    );
+    if (clickedTable && !clickedTable.reserved) {
+        console.log("Table cliquée :", clickedTable);
+        openReservationModal(clickedTable);
+    } else {
+        console.log("Aucune table disponible cliquée.");
+    }
+});
+// Fonction pour remplir la liste déroulante des heures
+function populateStartTimeDropdown() {
+    const startTimeDropdown = document.getElementById("startTime");
+    for (let hour = 15; hour <= 21; hour++) {
+        const option = document.createElement("option");
+        option.value = `${hour.toString().padStart(2, "0")}:00`;
+        option.textContent = `${hour}:00`;
+        startTimeDropdown.appendChild(option);
+    }
+}
+// Fonction pour ouvrir la fenêtre modale
+function openReservationModal(table) {
+    selectedTableId = table.id;
+    selectedTableName = table.name;
+    const selectedDate = document.getElementById("selectDate").value;
+    if (!selectedDate) {
+        alert("Veuillez sélectionner une date avant de réserver une table.");
+        return;
+    }
+    // Renseigner les informations dans la modale
+    document.getElementById("tableId").textContent = table.id;
+    document.getElementById("displayReservationDate").textContent = selectedDate;
+    // Afficher la modale
+    document.getElementById("reservationModal").style.display = "flex";
+}
+// Fonction pour fermer la fenêtre modale
+function closeReservationModal() {
+    document.getElementById("reservationModal").style.display = "none";
+}
+// Fonction pour soumettre la réservation
+function submitReservation() {
+    const reservationDate = document.getElementById("selectDate").value;
+    const startTime = document.getElementById("startTime").value;
+    const clientName = document.getElementById("clientName").value;
+    const clientEmail = document.getElementById("clientEmail").value;
+    const clientPhone = document.getElementById("clientPhone").value;
+    const TableName = "";
+
+
+    if (!reservationDate || !startTime || !clientName || !clientEmail || !clientPhone) {
+        alert("Veuillez remplir tous les champs.");
+        return;
+    }
+    const reservationData = {
+        TableId: selectedTableId,
+        TableName: selectedTableName,
+        Date: reservationDate,
+        StartTime: startTime,
+        ClientName: clientName,
+        ClientEmail: clientEmail,
+        ClientPhone: clientPhone,
+        SuccessUrl: window.location.origin + "/success",
+        CancelUrl: window.location.origin + "/cancel"
+    };
+    fetch("/api/payment/create-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reservationData)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Erreur lors de la création de la session de paiement.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            window.location.href = data.sessionUrl;
+        })
+        .catch(error => {
+            console.error("Erreur :", error);
+            alert("Erreur lors de la réservation : " + error.message);
+        });
+}
