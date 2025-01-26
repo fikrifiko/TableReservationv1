@@ -1,0 +1,18 @@
+﻿@model ReservationModel
+
+<div class="container mt-4">
+    <h1 class="text-success">Réservation Confirmée</h1>
+    <p>Merci, votre réservation a été confirmée.</p>
+
+    <ul>
+        <li><strong>Table :</strong> @Model.TableName</li>
+        <li><strong>Date :</strong> @Model.ReservationDate.ToString("dd/MM/yyyy")</li>
+        <li><strong>Heure :</strong> @Model.ReservationHoure.ToString("HH:mm")</li>
+        <li><strong>Nom :</strong> @Model.ClientName</li>
+        <li><strong>Email :</strong> @Model.ClientEmail</li>
+        <li><strong>Téléphone :</strong> @Model.ClientPhone</li>
+        <li><strong>Montant :</strong> @Model.Amount / 100 EUR</li>
+    </ul>
+
+    <a href="/" class="btn btn-primary">Retour à l'accueil</a>
+</div>

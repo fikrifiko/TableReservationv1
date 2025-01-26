@@ -4,15 +4,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Table_Reservation.Data;
 
 #nullable disable
 
 namespace Table_Reservation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250109200607_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250110185929_AddCanvasModel")]
+    partial class AddCanvasModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +23,25 @@ namespace Table_Reservation.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Table_Reservation.Models.CanvasModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CanvasModels");
+                });
+
             modelBuilder.Entity("Table_Reservation.Models.TableModel", b =>
                 {
                     b.Property<int>("Id")
@@ -34,6 +52,9 @@ namespace Table_Reservation.Migrations
 
                     b.Property<int>("Height")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Reserved")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Rotated")
                         .HasColumnType("bit");

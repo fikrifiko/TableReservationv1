@@ -5,27 +5,24 @@
 namespace Table_Reservation.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AddClientModel3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Tables",
+                name: "ClientModels",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    X = table.Column<int>(type: "int", nullable: false),
-                    Y = table.Column<int>(type: "int", nullable: false),
-                    Width = table.Column<int>(type: "int", nullable: false),
-                    Height = table.Column<int>(type: "int", nullable: false),
-                    Seats = table.Column<int>(type: "int", nullable: false),
-                    Rotated = table.Column<bool>(type: "bit", nullable: false)
+                    ClientName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ClientEmail = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ClientPhone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tables", x => x.Id);
+                    table.PrimaryKey("PK_ClientModels", x => x.Id);
                 });
         }
 
@@ -33,7 +30,7 @@ namespace Table_Reservation.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Tables");
+                name: "ClientModels");
         }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using Table_Reservation.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,17 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=RoomLayout}/{action=Index}/{id?}");
+
+
+// Charger les clés Stripe
+var stripeSettings = builder.Configuration.GetSection("Stripe");
+
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
+
 
 // Lancer l'application
 app.Run();

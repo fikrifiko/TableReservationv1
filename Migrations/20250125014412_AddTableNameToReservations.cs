@@ -5,7 +5,7 @@
 namespace Table_Reservation.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateTableModel : Migration
+    public partial class AddTableNameToReservations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
