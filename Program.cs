@@ -1,6 +1,12 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+using Table_Reservation.DAL.Repositories;
 using Table_Reservation.Data;
+using Table_Reservation.Models;
+using Table_Reservation.Services;
+using Table_Reservation.Services.Interfaces;
+using Table_Reservation.Validator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +16,19 @@ builder.Services.AddControllersWithViews();
 // Ajouter le service Entity Framework Core avec SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//*******INJECTION DE DEPENDANCES*************//
+
+//Service Injection
+builder.Services.AddScoped<IClientService, ClientService>();
+
+//Repository Injection
+builder.Services.AddTransient<IClientRepository, ClientRepository>();
+
+//Validator Injection
+builder.Services.AddScoped<IValidator<ClientModel>, ClientModelValidator>();
+
+//******************//
 
 // Construire l'application
 var app = builder.Build();

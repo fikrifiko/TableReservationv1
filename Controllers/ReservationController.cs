@@ -16,6 +16,12 @@ public class ReservationController : Controller
         _context = context;
     }
 
+    // Action pour afficher la page de réservation client
+    public IActionResult Index()
+    {
+        return View("PageReservationClient"); // Retourne la vue Page_Reservation_Client.cshtml
+    }
+
     public IActionResult Success(string sessionId)
     {
         try

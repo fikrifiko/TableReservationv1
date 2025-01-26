@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Table_Reservation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250125013504_NomDeMigration")]
-    partial class NomDeMigration
+    [Migration("20250126004546_TestMOhanad5")]
+    partial class TestMOhanad5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
