@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afficher un PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        input {
+            margin: 20px 0;
+        }
+        iframe {
+            width: 80%;
+            height: 500px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Importer et afficher un fichier PDF</h2>
+
+    <input type="file" id="pdfInput" accept="application/pdf">
+
+    <iframe id="pdfViewer" src="" style="display: none;"></iframe>
+
+    <script>
+        document.getElementById('pdfInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type === "application/pdf") {
+                const fileURL = URL.createObjectURL(file);
+                const viewer = document.getElementById('pdfViewer');
+                viewer.src = fileURL;
+                viewer.style.display = "block";
+            } else {
+                alert("Veuillez sélectionner un fichier PDF.");
+            }
+        });
+    </script>
+
+</body>
+</html>

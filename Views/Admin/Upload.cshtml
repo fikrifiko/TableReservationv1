@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "_LayoutAdmin"; // Utilise le layout Admin (si tu en as un)
+    ViewData["Title"] = "Upload";
+}
+
+
+<section class="upload-section">
+    <div class="upload-container">
+        <h2>📄 Télécharger un Nouveau Menu</h2>
+        <p>Importez un fichier PDF contenant le menu du restaurant en plusieurs langues.</p>
+
+        <form asp-controller="File" asp-action="UploadPdf" method="post" enctype="multipart/form-data" class="upload-form">
+
+            <!-- Upload Menu Français -->
+            <label for="file-fr" class="custom-file-upload">
+                🇫🇷 📂 Choisir un fichier PDF (Français)
+                <input type="file" name="fileFr" id="file-fr" accept="application/pdf" required hidden>
+            </label>
+
+            <!-- Upload Menu Anglais -->
+            <label for="file-en" class="custom-file-upload">
+                🇬🇧 📂 Choisir un fichier PDF (Anglais)
+                <input type="file" name="fileEn" id="file-en" accept="application/pdf" required hidden>
+            </label>
+
+            <!-- Upload Menu Néerlandais -->
+            <label for="file-nl" class="custom-file-upload">
+                🇳🇱 📂 Choisir un fichier PDF (Néerlandais)
+                <input type="file" name="fileNl" id="file-nl" accept="application/pdf" required hidden>
+            </label>
+
+            <button type="submit" class="upload-btn">📤 Uploader les PDFs</button>
+        </form>
+    </div>
+</section>
+<link rel="stylesheet" href="~/css/StyleUploadPdf.css" asp-append-version="true">
+<script src="/js/ScriptDisplayBloc.js"></script> @* script qui verifie si token avant d'afficher page admin' *@
+<style>
+    /* Centrer la page */
+    body {
+        margin: 30px;
+        padding: 0;
+        display: none; /* Cache tout par défaut */
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #000 !important;
+        font-family: Arial, sans-serif;
+    }</style>

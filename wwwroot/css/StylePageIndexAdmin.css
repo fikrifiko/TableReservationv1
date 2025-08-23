@@ -1,0 +1,137 @@
+﻿/* Centrer la page */
+body {
+    margin: 30px;
+    padding: 0;
+    display: flex; /* Cache tout par défaut */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #000 !important;
+    font-family: Arial, sans-serif;
+}
+
+/* Conteneur principal */
+.container {
+    text-align: center;
+    max-width: 2000px;
+    width: 100%;
+    padding: 20px;
+    background-color: #f4f1ea; /* Blanc cassé élégant */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+<style >
+.modal.fade.show {
+    display: flex !important;
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre horizontalement */
+}
+
+</style >
+/* Titre */
+h1 {
+    color: #0056b3; /* Bleu profond et classe */
+    margin-bottom: 20px;
+}
+
+/* Canvas centré */
+#roomCanvas {
+    margin: 20px auto;
+    display: block;
+    border: 1px solid #bbb; /* Gris clair pour éviter un contraste trop dur */
+    background-color: #dddddd; /* Gris doux et propre */
+    max-width: 100%;
+}
+
+/* Contrôles sous le canvas */
+.controls {
+    margin-top: 20px;
+    text-align: center;
+}
+
+    .controls div {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+button, input {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: 1px solid #ccc; /* Gris doux */
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background-color 0.3s;
+}
+
+    button:hover {
+        background-color: #e6e6e6;
+    }
+
+/* Boutons spécifiques */
+.btn-primary {
+    background: linear-gradient(135deg, #0056b3, #003c80); /* Dégradé bleu moderne */
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #004494, #002f66);
+    }
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #b71c1c); /* Dégradé rouge classe */
+    color: white;
+}
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #b71c1c, #9a0000);
+    }
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #1e7e34); /* Dégradé vert soft */
+    color: white;
+}
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #218838, #166d28);
+    }
+
+.btn-info {
+    background: linear-gradient(135deg, #17a2b8, #138496); /* Dégradé bleu cyan */
+    color: white;
+}
+
+    .btn-info:hover {
+        background: linear-gradient(135deg, #138496, #0e6372);
+    }
+
+input[type="number"] {
+    width: 70px;
+    text-align: center;
+}
+
+/* Fenêtre modale */
+#reservationModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fond sombre mais léger */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #ffffff, #f2f2f2); /* Dégradé blanc propre */
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}

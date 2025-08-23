@@ -1,0 +1,135 @@
+﻿.upload-section {
+    height: 100vh; /* Pleine hauteur */
+    width: 100vw; /* Prend toute la largeur de l'écran */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+    padding: 60px 5%; /* Ajustement automatique du padding */
+    overflow: hidden; /* Supprime tout débordement */
+}
+
+.container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Conteneur du formulaire */
+.upload-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    width: 50%;
+    max-width: 500px;
+    min-width: 300px; /* Empêche que ça devienne trop petit */
+}
+
+    /* Titre et texte */
+    .upload-container h2 {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .upload-container p {
+        font-size: 16px;
+        margin-bottom: 20px;
+        color: #f5c16c;
+    }
+
+/* Champs de fichier personnalisés */
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centré même en petit écran */
+    flex-wrap: wrap; /* Évite les dépassements */
+    padding: 15px;
+    background: linear-gradient(45deg, #ff7e5f, #feb47b);
+    color: white;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 5px 15px rgba(255, 126, 95, 0.4);
+    font-size: 18px;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px; /* Moins d'espace pour petits écrans */
+}
+
+    .custom-file-upload:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 10px 20px rgba(255, 126, 95, 0.5);
+    }
+
+    /* Icônes pour améliorer la lisibilité */
+    .custom-file-upload img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+    }
+
+/* Espacement entre les boutons */
+.upload-form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Bouton d'upload */
+.upload-btn {
+    margin-top: 20px;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    color: white;
+    transition: 0.3s;
+    box-shadow: 0px 5px 15px rgba(39, 174, 96, 0.4);
+    width: 100%;
+}
+
+    .upload-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 10px 20px rgba(39, 174, 96, 0.5);
+    }
+
+/* 📱 Responsive Design */
+@media screen and (max-width: 768px) {
+    .upload-section {
+        padding: 40px 10px; /* Réduit le padding pour petits écrans */
+    }
+
+    .upload-container {
+        width: 90%; /* Évite qu'il soit trop large */
+        padding: 30px;
+    }
+
+    .custom-file-upload {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .upload-btn {
+        font-size: 16px;
+        padding: 12px;
+    }
+}
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #b71c1c); /* Dégradé rouge classe */
+    color: white;
+}
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #b71c1c, #9a0000);
+    }

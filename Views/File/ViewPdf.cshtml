@@ -1,0 +1,119 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@model string
+
+@if (!string.IsNullOrEmpty(Model))
+{
+    <div class="modal fade" id="languageModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Sélectionnez une langue</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <button class="btn btn-primary m-2 language-btn" data-lang="fr">🇫🇷 Français</button>
+                    <button class="btn btn-success m-2 language-btn" data-lang="en">🇬🇧 Anglais</button>
+                    <button class="btn btn-warning m-2 language-btn" data-lang="nl">🇳🇱 Néerlandais</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="pdf-title">
+
+        <h2>📄 MENU</h2>
+    </div>
+    <iframe id="pdfFrame" src="@Model" width="100%" height="100%"></iframe>
+}
+else
+{
+    <p>Aucun fichier PDF trouvé.</p>
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("Page chargée, vérification du chemin:", window.location.pathname);
+
+        let modalElement = document.getElementById('languageModal');
+
+        // Vérifier si Bootstrap est bien chargé
+        if (typeof bootstrap === "undefined") {
+            console.error("Bootstrap n'est pas chargé !");
+            return;
+        }
+
+        // Forcer l'affichage du modal à chaque chargement de page
+        if (modalElement) {
+            console.log("Modal trouvé dans le DOM.");
+            let modal = new bootstrap.Modal(modalElement);
+            modal.show(); // Afficher toujours le modal au chargement de la page
+        } else {
+            console.error("Le modal ne peut pas être trouvé.");
+        }
+
+        // Attacher les événements de clic sur les boutons de langue
+        document.querySelectorAll('.language-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                let lang = this.getAttribute('data-lang');
+                localStorage.setItem("selectedLanguage", lang); // Sauvegarde la langue sélectionnée
+                window.location.href = `/File/ViewPdf?lang=${lang}`; // Redirige vers la bonne version du PDF
+            });
+        });
+
+        // Bouton "Changer de langue" pour rouvrir le modal
+        let changeLangBtn = document.getElementById('changeLanguageBtn');
+        if (changeLangBtn) {
+            changeLangBtn.addEventListener('click', function () {
+                localStorage.removeItem("selectedLanguage"); // Supprimer la langue enregistrée
+                let modal = new bootstrap.Modal(document.getElementById('languageModal'));
+                modal.show(); // Ouvrir à nouveau le modal
+            });
+        }
+    });
+</script>
+
+
+<!-- Bootstrap JS (si non inclus) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden; /* Empêche le défilement inutile */
+    }
+
+    .pdf-title {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 3vh;
+        text-align: center;
+        background: linear-gradient(45deg, #ff7e5f, #feb47b);
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        border-radius: 10px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        margin: 20px auto;
+        width: 30%;
+        padding: 15px;
+    }
+
+    iframe {
+        width: 100%;
+        height: 80vh;
+        border: none;
+        display: block;
+    }
+
+    h2 {
+        text-align: center;
+    }
+</style>

@@ -1,0 +1,141 @@
+﻿/* 🎬 Animation pour le texte */
+@keyframes fadeZoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Effet sur "Pizzeria" */
+@keyframes glowText {
+    0% {
+        text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+    }
+
+    50% {
+        text-shadow: 0 0 20px rgba(255, 204, 0, 1);
+    }
+
+    100% {
+        text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+    }
+}
+
+/* Apparition progressive des boutons */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 🌟 SECTION HERO */
+.hero {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('/Images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/*  Contenu du Hero */
+.hero-content {
+    max-width: 750px;
+    color: white;
+    animation: fadeZoomIn 1s ease-out;
+}
+
+/*  Animation spéciale pour "Pizzeria" */
+.hero h1 span {
+    color: #ffcc00;
+    animation: glowText 2s infinite ease-in-out;
+}
+
+/* ✨ Animation du titre */
+.hero h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeZoomIn 1.2s ease-out forwards;
+    font-family: 'Playfair Display', serif;
+    color:white;
+}
+
+/* ✨ Animation du sous-titre */
+.hero p {
+    font-size: 1.5rem;
+    margin: 20px 0;
+    opacity: 0;
+    animation: slideUp 1.5s ease-out forwards;
+    color: #ffe5b4;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn, .btn-secondary {
+    padding: 5px 12px;
+    width: auto;
+    text-align: center;
+}
+
+@media (max-width: 1024px) {
+    .hero h1 {
+        font-size: 3rem;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .btn, .btn-secondary {
+        width: 100%;
+    }
+}
