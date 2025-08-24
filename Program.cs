@@ -6,12 +6,41 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Ajouter Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Table Reservation API", Version = "v1" });
+    var securityScheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Entrer 'Bearer {token}'"
+    };
+    c.AddSecurityDefinition("Bearer", securityScheme);
+    var securityRequirement = new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            }, new string[] { }
+        }
+    };
+    c.AddSecurityRequirement(securityRequirement);
+});
 
 // Ajouter les services au conteneur
 builder.Services.AddControllersWithViews();
@@ -27,12 +56,13 @@ builder.Services.AddScoped<SmsService>();
 // Configuration de la lecture des paramètres
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables()
     .Build();
 
-// 🔹 Clé secrète pour JWT
+// JWT key
 var key = Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]);
 
-// 🔹 Configuration de l'authentification avec JWT
+// JWT authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,8 +71,8 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; // En développement, sinon true
-    options.SaveToken = true; // Permet de sauvegarder le token
+    options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+    options.SaveToken = true; // Save token
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -52,11 +82,37 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = configuration["Jwt:Issuer"],
         ValidAudience = configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key),
+        ClockSkew = TimeSpan.Zero,
         RoleClaimType = ClaimTypes.Role
+    };
+    // Read token from cookie
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var tokenFromCookie = context.HttpContext.Request.Cookies["access_token"];
+            if (!string.IsNullOrEmpty(tokenFromCookie) && string.IsNullOrEmpty(context.Token))
+            {
+                context.Token = tokenFromCookie;
+            }
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            // Redirect 401 to home
+            context.HandleResponse();
+            context.Response.Redirect("/Home/Index?message=deconnected");
+            return Task.CompletedTask;
+        },
+        OnForbidden = context =>
+        {
+            context.Response.Redirect("/Home/Index?message=deconnected");
+            return Task.CompletedTask;
+        }
     };
 });
 
-// 🔹 Ajouter la gestion des sessions
+// Session
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -73,7 +129,7 @@ builder.Services.AddLogging(logging =>
     logging.AddDebug();
 });
 
-// Ajout des services CORS
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost",
@@ -83,17 +139,42 @@ builder.Services.AddCors(options =>
                           .AllowCredentials());
 });
 
-// Construire l'application
+// Rate limiting (login et upload)
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("login-policy", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anon",
+        factory: key => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 5,
+            Window = TimeSpan.FromMinutes(1),
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0
+        }
+    ));
+
+    options.AddPolicy("upload-policy", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anon",
+        factory: key => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 3,
+            Window = TimeSpan.FromMinutes(1),
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 0
+        }
+    ));
+});
+
+// Build app
 var app = builder.Build();
 
-// Swagger UI (placé correctement après app)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Configurer le pipeline des requêtes HTTP
+// HTTP pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -103,22 +184,45 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("AllowLocalhost");
+app.UseRateLimiter();
 
-app.UseSession(); // Active la gestion des sessions
-app.UseAuthentication(); // Active l’authentification des utilisateurs
-app.UseAuthorization();  // Active les autorisations
+app.UseSession(); // Session
+app.UseAuthentication(); // Auth
+app.UseAuthorization();  // Authorization
 
-// Middleware de diagnostic pour voir si l'utilisateur est authentifié
+// Security headers
 app.Use(async (context, next) =>
 {
-    Console.WriteLine($"🔸 Processing request: {context.Request.Path}");
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Referrer-Policy"] = "no-referrer";
+    context.Response.Headers["Permissions-Policy"] = "geolocation=()";
+    // CSP basique: ajuster si besoin (peut casser des scripts externes)
+    context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'";
+    await next();
+});
+
+// Redirect 401/403 to home with message
+app.Use(async (context, next) =>
+{
+    await next();
+    if (context.Response.StatusCode == StatusCodes.Status401Unauthorized || context.Response.StatusCode == StatusCodes.Status403Forbidden)
+    {
+        context.Response.Redirect("/Home/Index?message=deconnected");
+    }
+});
+
+// Diagnostic logging
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Processing request: {context.Request.Path}");
     if (context.User.Identity?.IsAuthenticated == true)
     {
-        Console.WriteLine($"✅ User authenticated: {context.User.Identity.Name}");
+        Console.WriteLine($"User authenticated: {context.User.Identity.Name}");
     }
     else
     {
-        Console.WriteLine("🚫 User NOT authenticated");
+        Console.WriteLine("User not authenticated");
     }
     await next();
 });

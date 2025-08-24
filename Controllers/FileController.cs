@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System;
 using System.IO;
 using System.Linq;
@@ -22,13 +24,29 @@ public class FileController : Controller
 
 
     [HttpPost]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> UploadPdf(IFormFile fileFr, IFormFile fileEn, IFormFile fileNl)
     {
+        const long maxSizeBytes = 10 * 1024 * 1024; // 10MB
+        bool IsPdf(IFormFile f) => f != null && f.ContentType == "application/pdf";
+        bool SizeOk(IFormFile f) => f != null && f.Length > 0 && f.Length <= maxSizeBytes;
+
         if ((fileFr == null || fileFr.Length == 0) ||
             (fileEn == null || fileEn.Length == 0) ||
             (fileNl == null || fileNl.Length == 0))
         {
             return BadRequest("Veuillez sélectionner tous les fichiers PDF.");
+        }
+
+        if (!IsPdf(fileFr) || !IsPdf(fileEn) || !IsPdf(fileNl))
+        {
+            return BadRequest("Type de fichier invalide. Uniquement PDF.");
+        }
+
+        if (!SizeOk(fileFr) || !SizeOk(fileEn) || !SizeOk(fileNl))
+        {
+            return BadRequest("Fichier trop volumineux (max 10MB).");
         }
 
         string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
@@ -55,10 +73,17 @@ public class FileController : Controller
             System.IO.File.Delete(filePath);
         }
 
-        // Enregistrer le nouveau fichier
-        await using (var stream = new FileStream(filePath, FileMode.Create))
+        // Vérifier magic number PDF (%PDF)
+        using (var ms = new MemoryStream())
         {
-            await file.CopyToAsync(stream);
+            await file.CopyToAsync(ms);
+            var bytes = ms.ToArray();
+            var header = Encoding.ASCII.GetString(bytes.Take(4).ToArray());
+            if (header != "%PDF")
+            {
+                throw new InvalidDataException("Le fichier n'est pas un PDF valide.");
+            }
+            await System.IO.File.WriteAllBytesAsync(filePath, bytes);
         }
 
         // Mettre à jour la base de données avec le nouveau fichier

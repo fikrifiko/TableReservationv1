@@ -8,6 +8,7 @@ using System;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -34,20 +35,41 @@ public class AdminController : Controller
 
         var admin = _context.Administrators.SingleOrDefault(a => a.Username == loginData.Username);
 
-        if (admin == null || loginData.Password != admin.Password)
+        if (admin == null)
         {
             return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect." });
         }
 
-        // 🔹 Vérifier si la clé est bien récupérée
-        Console.WriteLine($"🔹 SecretKey récupérée: {_configuration["Jwt:SecretKey"]}");
-        Console.WriteLine($"🔹 Issuer récupéré: {_configuration["Jwt:Issuer"]}");
-        Console.WriteLine($"🔹 Audience récupérée: {_configuration["Jwt:Audience"]}");
+        bool passwordValid = false;
+        try
+        {
+            passwordValid = BCryptNet.Verify(loginData.Password, admin.Password);
+        }
+        catch
+        {
+            passwordValid = false;
+        }
+        // Fallback clair si le mot de passe en base n'est pas encore haché
+        if (!passwordValid && loginData.Password == admin.Password)
+        {
+            passwordValid = true;
+            try
+            {
+                admin.Password = BCryptNet.HashPassword(loginData.Password);
+                await _context.SaveChangesAsync();
+            }
+            catch { }
+        }
+
+        if (!passwordValid)
+        {
+            return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect." });
+        }
 
         var secretKey = _configuration["Jwt:SecretKey"];
         if (string.IsNullOrEmpty(secretKey))
         {
-            return StatusCode(500, new { message = "🚨 Clé secrète JWT non configurée." });
+            return StatusCode(500, new { message = "Clé secrète JWT non configurée." });
         }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
@@ -63,19 +85,29 @@ public class AdminController : Controller
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddSeconds(50),
+            expires: DateTime.UtcNow.AddSeconds(30),
             signingCredentials: credentials
         );
 
         if (token == null)
         {
-            Console.WriteLine("🚨 Erreur: Token JWT non généré !");
             return StatusCode(500, new { message = "Erreur lors de la génération du token." });
         }
 
-        Console.WriteLine("✅ Token généré avec succès !");
         var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-        Console.WriteLine($"🔹 Token JWT : {tokenString}");
+
+        // Déposer le token dans un cookie HttpOnly sécurisé
+        Response.Cookies.Append(
+            "access_token",
+            tokenString,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddSeconds(30)
+            }
+        );
 
         return Ok(new { token = tokenString });
     }
@@ -84,20 +116,28 @@ public class AdminController : Controller
     [HttpPost("Logout")]
     public IActionResult Logout()
     {
+        // Supprimer le cookie de token JWT
+        Response.Cookies.Delete("access_token");
         return Ok(new { message = "Déconnecté avec succès." });
 
     }
     [HttpPost("VerifyToken")]
     public IActionResult VerifyToken()
     {
-        var authHeader = Request.Headers["Authorization"].FirstOrDefault();
-        
-        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+        // Lire d'abord le cookie HttpOnly, sinon l'en-tête Authorization
+        var token = Request.Cookies["access_token"];
+        if (string.IsNullOrEmpty(token))
+        {
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+            {
+                token = authHeader.Substring("Bearer ".Length).Trim();
+            }
+        }
+        if (string.IsNullOrEmpty(token))
         {
             return Unauthorized(new { message = "Aucun token fourni." });
         }
-
-        var token = authHeader.Substring("Bearer ".Length).Trim();
 
         try
         {

@@ -1,12 +1,5 @@
-﻿document.addEventListener("DOMContentLoaded", async () => {
-
-    // pour donner accés que aux admins avec un token
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-        console.warn("🔒 Accès refusé : Aucun token trouvé, redirection vers la connexion !");
-        window.location.href = "/Home/Index"; // Redirection si pas de token
-    } else {
-        document.body.style.display = "flex"; // 🔹 Affiche la page uniquement si token valide
-    }
+﻿document.addEventListener("DOMContentLoaded", () => {
+    // La protection est assurée côté serveur via [Authorize].
+    // On affiche simplement la page si elle est atteinte.
+    document.body.style.display = "flex";
 });

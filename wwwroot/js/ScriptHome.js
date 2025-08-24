@@ -3,7 +3,7 @@ const btnAdminLogin = document.getElementById("btnAdminLogin");
 
 btnAdminLogin.addEventListener("click", function (event) {
     event.preventDefault();
-    console.log("✅ Bouton 'Se connecter' cliqué !");
+    console.log("Bouton 'Se connecter' cliqué");
 
     let modalElement = document.getElementById("adminModal");
     let modal = new bootstrap.Modal(modalElement); // Utilise Bootstrap pour gérer le modal
@@ -23,9 +23,9 @@ function closeAdminModal() {
     let modal = bootstrap.Modal.getInstance(modalElement);
     if (modal) {
         modal.hide();
-        console.log("✅ Modal fermé !");
+        console.log("Modal fermé");
     } else {
-        console.error("⚠️ Erreur : Impossible de fermer le modal.");
+        console.error("Erreur : Impossible de fermer le modal.");
     }
 }
 
@@ -37,7 +37,7 @@ async function submitAdminLogin(event) {
     const password = document.getElementById("password").value;
 
     try {
-        // 🔹 POST pour récupérer le token
+        // POST pour récupérer le token
         const loginResponse = await fetch("/api/Admin/Login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -52,29 +52,12 @@ async function submitAdminLogin(event) {
 
         const loginData = await loginResponse.json();
         if (loginData.token) {
-            console.log("✅ Connexion réussie, token reçu :", loginData.token);
-
-            // 🔹 Stocker le token dans localStorage
-            localStorage.setItem("token", loginData.token);
-
-            // ✅ GET vers AdminView/Dashboard avec le Bearer JWT
-            const dashboardResponse = await fetch("/AdminView/Dashboard", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                    "Content-Type": "application/json"
-                }
-            });
-
-            if (!dashboardResponse.ok) {
-                throw new Error("🚨 Accès refusé : " + dashboardResponse.status);
-            }
-
-            // ✅ Rediriger uniquement si l'accès au Dashboard est autorisé
-            window.location.href = "/AdminView/Dashboard"; // ✅ Corrigez bien ici !
+            console.log("Connexion réussie");
+            // Le cookie HttpOnly est déposé par le serveur. Redirection directe.
+            window.location.href = "/AdminView/Dashboard";
         }
     } catch (error) {
-        console.error("🚨 Erreur lors de la connexion :", error);
+        console.error("Erreur lors de la connexion :", error);
         alert("Une erreur est survenue. Veuillez réessayer.");
     }
 }

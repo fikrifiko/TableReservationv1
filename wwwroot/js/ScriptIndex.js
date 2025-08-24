@@ -1,21 +1,5 @@
 ﻿document.addEventListener("DOMContentLoaded", async () => {
-
-  //  headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
-
-    //// pour donner accés que aux admins avec un token
-    //const token = localStorage.getItem("token");
-
-    //if (!token) {
-    //    console.warn("🔒 Accès refusé : Aucun token trouvé, redirection vers la connexion !");
-    //    window.location.href = "/Home/Index"; // Redirection si pas de token
-    //} else {
-    //    document.body.style.display = "flex"; // 🔹 Affiche la page uniquement si token valide
-    //}
-
-
-    ////
-
-
+    // init
     const canvas = document.getElementById("roomCanvas");
     const ctx = canvas.getContext("2d");
     const sizeSelector = document.getElementById("canvasSizeSelect");
@@ -31,15 +15,15 @@
     const saveCanvasButton = document.getElementById("saveCanvasButton");
 
     let tables = [];
-    let draggingTable = null; // Table en cours de déplacement
-    let selectedTable = null; // Table actuellement sélectionnée
+    let draggingTable = null; // dragging
+    let selectedTable = null; // selected
 
 
 
 
 
 
-    // Fonction pour dessiner les tables
+    // draw tables
     function drawTables() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         tables.forEach(table => {
@@ -50,26 +34,25 @@
                 ctx.rotate(Math.PI / 2);
             }
 
-            // Dessiner un rectangle avec coins arrondis
-            const radius = 10; // Rayon pour arrondir les coins
+            const radius = 10; // rounded corners
             const x = -table.width / 2;
             const y = -table.height / 2;
             const width = table.width;
             const height = table.height;
 
             ctx.beginPath();
-            ctx.moveTo(x + radius, y); // Coin supérieur gauche
-            ctx.lineTo(x + width - radius, y); // Ligne supérieure
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius); // Coin supérieur droit
-            ctx.lineTo(x + width, y + height - radius); // Ligne droite
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height); // Coin inférieur droit
-            ctx.lineTo(x + radius, y + height); // Ligne inférieure
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius); // Coin inférieur gauche
-            ctx.lineTo(x, y + radius); // Ligne gauche
-            ctx.quadraticCurveTo(x, y, x + radius, y); // Coin supérieur gauche
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
             ctx.closePath();
 
-            // Ajout d'une ombre pour un effet visuel
+            // shadow
             ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
             ctx.shadowBlur = 8;
             ctx.shadowOffsetX = 4;
@@ -77,28 +60,28 @@
 
             ctx.fillStyle ="#6D9F71";
 
-            // Remplir le rectangle avec la couleur
+            // fill
             ctx.fill();
 
-            // Réinitialiser l'ombre avant de dessiner le texte
+            // reset shadow
             ctx.shadowColor = "transparent";
 
-            // Dessiner le nom de la table
-            ctx.fillStyle = "white"; // Blanc pour un meilleur contraste
+            // label
+            ctx.fillStyle = "white";
             ctx.font = "bold 14px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(table.name, 0, -8); // Texte principal légèrement au-dessus du centre
+            ctx.fillText(table.name, 0, -8);
 
-            // Dessiner le nombre de sièges
+            // seats
             ctx.font = "12px Arial";
-            ctx.fillText(`(${table.seats} P)`, 0, 10); // Texte secondaire légèrement en dessous du centre
+            ctx.fillText(`(${table.seats} P)`, 0, 10);
 
             ctx.restore();
         });
     }
 
-    // Charger les tables depuis la base de données
+    // load tables
     function loadTables() {
         fetch('/api/tables')
             .then(response => response.json())
@@ -112,7 +95,7 @@
             .catch(error => console.error("Erreur lors du chargement des tables :", error));
     }
 
-    // Fonction pour redimensionner le canvas
+    // resize canvas
     function resizeCanvas(scale) {
         const originalWidth = 800;
         canvas.width = originalWidth * scale;
@@ -120,18 +103,18 @@
         drawTables();
     }
 
-    // Gestion du redimensionnement via le sélecteur
+    // scale select
     sizeSelector.addEventListener("change", (event) => {
         const selectedSize = event.target.value;
 
         if (selectedSize === "1") {
-            canvas.width = 800; // Taille par défaut
+            canvas.width = 800;
             canvas.height = 600;
         } else if (selectedSize === "1.50") {
-            canvas.width = 1200; // Taille moyenne
+            canvas.width = 1200;
             canvas.height = 600;
         } else if (selectedSize === "1.90") {
-            canvas.width = 1520; // Taille large
+            canvas.width = 1520;
             canvas.height = 600;
         }
 
@@ -139,7 +122,7 @@
         drawTables();
     });
 
-    // Ajouter une nouvelle table
+    // add table
     addTableButton.addEventListener("click", () => {
         const seats = parseInt(document.getElementById("seatsInput").value);
         if (seats < 2 || seats > 10 || seats % 2 !== 0) {
@@ -162,7 +145,7 @@
     });
 
 
-    /** Faire pivoter la table sélectionnée */
+    // rotate table
     function rotateTable() {
         if (!selectedTable) {
             alert('Veuillez sélectionner une table pour la faire pivoter.');
@@ -172,7 +155,7 @@
         drawTables();
     }
 
-    // Supprimer une table sélectionnée
+    // delete table
     deleteTableButton.addEventListener("click", () => {
         if (!selectedTable) {
             alert("Veuillez sélectionner une table à supprimer.");
@@ -183,7 +166,7 @@
         drawTables();
     });
 
-    // Sauvegarder les tables dans la base de données
+    // save tables
     saveTablesButton.addEventListener("click", () => {
         const dataToSend = tables.map(({ x, y, width, height, seats, rotated }) => ({
             x: Math.round(x),
@@ -207,7 +190,7 @@
             .catch(error => alert(`Erreur : ${error.message}`));
     });
 
-    // Charger les dimensions du canvas depuis la base de données
+    // load canvas size
     async function loadCanvasSize() {
         try {
             const response = await fetch('/api/canvas/get');
@@ -224,7 +207,7 @@
         }
     }
 
-    // Sauvegarder les dimensions du canvas
+    // save canvas size
     saveCanvasButton.addEventListener("click", () => {
         const dataToSend = {
             width: canvas.width,
@@ -249,7 +232,7 @@
             });
     });
 
-    // Gestion de la sélection d'une table
+    // select table
     canvas.addEventListener("mousedown", (e) => {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -291,7 +274,7 @@
         draggingTable = null;
     });
 
-    // Gestion du clic sur "Modifier le nom"
+    // open rename modal
     modifyNameButton.addEventListener("click", () => {
         if (!selectedTable) {
             alert("Veuillez sélectionner une table en cliquant dessus.");
@@ -343,7 +326,7 @@
         }
     });
 
-    // Charger les tables et dimensions au démarrage
+    // init
     const defaultCanvasSize = await loadCanvasSize();
     canvas.width = defaultCanvasSize.width;
     canvas.height = defaultCanvasSize.height;
