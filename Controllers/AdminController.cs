@@ -40,26 +40,7 @@ public class AdminController : Controller
             return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect." });
         }
 
-        bool passwordValid = false;
-        try
-        {
-            passwordValid = BCryptNet.Verify(loginData.Password, admin.Password);
-        }
-        catch
-        {
-            passwordValid = false;
-        }
-        // Fallback clair si le mot de passe en base n'est pas encore haché
-        if (!passwordValid && loginData.Password == admin.Password)
-        {
-            passwordValid = true;
-            try
-            {
-                admin.Password = BCryptNet.HashPassword(loginData.Password);
-                await _context.SaveChangesAsync();
-            }
-            catch { }
-        }
+        bool passwordValid = BCryptNet.Verify(loginData.Password, admin.Password);
 
         if (!passwordValid)
         {
@@ -103,7 +84,7 @@ public class AdminController : Controller
             new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
+                Secure = Request.IsHttps,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTimeOffset.UtcNow.AddSeconds(30)
             }

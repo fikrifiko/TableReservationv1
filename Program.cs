@@ -8,6 +8,9 @@ using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +47,16 @@ builder.Services.AddSwaggerGen(c =>
 
 // Ajouter les services au conteneur
 builder.Services.AddControllersWithViews();
+
+// Compression
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+});
+builder.Services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
+builder.Services.Configure<GzipCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
 
 // Ajouter le service Entity Framework Core avec SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -168,6 +181,15 @@ builder.Services.AddRateLimiter(options =>
 // Build app
 var app = builder.Build();
 
+// Warm-up DB connection
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.CanConnect();
+}
+catch { }
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -181,7 +203,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseResponseCompression();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        var headers = ctx.Context.Response.Headers;
+        if (!ctx.File.Name.EndsWith(".html", System.StringComparison.OrdinalIgnoreCase))
+        {
+            headers["Cache-Control"] = "public, max-age=2592000"; // 30 days
+        }
+    }
+});
 app.UseRouting();
 app.UseCors("AllowLocalhost");
 app.UseRateLimiter();
@@ -198,7 +231,12 @@ app.Use(async (context, next) =>
     context.Response.Headers["Referrer-Policy"] = "no-referrer";
     context.Response.Headers["Permissions-Policy"] = "geolocation=()";
     // CSP basique: ajuster si besoin (peut casser des scripts externes)
-    context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'";
+    var csp = "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'";
+    if (app.Environment.IsDevelopment())
+    {
+        csp += "; connect-src 'self' http://localhost:60080"; // BrowserLink dev
+    }
+    context.Response.Headers["Content-Security-Policy"] = csp;
     await next();
 });
 

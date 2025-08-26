@@ -58,7 +58,7 @@
             ctx.shadowOffsetX = 4;
             ctx.shadowOffsetY = 4;
 
-            ctx.fillStyle ="#6D9F71";
+            ctx.fillStyle = table.selected ? "#d3d3d3" : "#6D9F71";
 
             // fill
             ctx.fill();
