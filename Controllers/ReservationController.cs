@@ -16,6 +16,15 @@ public class ReservationController : Controller
         _context = context;
     }
 
+<<<<<<< HEAD
+=======
+    // Action pour afficher la page de réservation client
+    public IActionResult Index()
+    {
+        return View("PageReservationClient"); // Retourne la vue Page_Reservation_Client.cshtml
+    }
+
+>>>>>>> old-origin/master
     public IActionResult Success(string sessionId)
     {
         try
@@ -41,7 +50,11 @@ public class ReservationController : Controller
             var reservation = new ReservationModel
             {
                 TableId = int.Parse(session.Metadata["tableId"]),
+<<<<<<< HEAD
                 TableName = session.Metadata["TableName"],
+=======
+                                TableName = session.Metadata["TableName"],
+>>>>>>> old-origin/master
 
                 ClientName = session.Metadata["clientName"],
                 ClientEmail = session.Metadata["clientEmail"],
@@ -82,6 +95,7 @@ public class ReservationController : Controller
         }
     }
 
+<<<<<<< HEAD
     [HttpGet]
     [Route("api/reservations")]
     public IActionResult GetReservations([FromQuery] string date, [FromQuery] string time)
@@ -127,6 +141,8 @@ public class ReservationController : Controller
         }
     }
 
+=======
+>>>>>>> old-origin/master
 
     private dynamic GetPaymentDetails(string sessionId)
     {
@@ -136,5 +152,38 @@ public class ReservationController : Controller
     }
 
 
+<<<<<<< HEAD
+=======
+    [HttpPost]
+public IActionResult CreateTestReservation([FromBody] ReservationModel reservation)
+{
+
+    if (ModelState.IsValid)
+    {
+            if (reservation.ReservationDate == default || reservation.ReservationDate < new DateTime(1753, 1, 1))
+            {
+                reservation.ReservationDate = DateTime.Now; // Ou une autre date valide par défaut
+            }
+
+            if (reservation.ReservationHoure == default || reservation.ReservationHoure < new DateTime(1753, 1, 1))
+            {
+                reservation.ReservationHoure = DateTime.Now; // Ou une autre heure valide par défaut
+            }
+
+
+            // Simulez une réservation et enregistrez-la dans la base de données
+            reservation.Amount = 1000; // Montant fictif
+        _context.Reservations.Add(reservation);
+        _context.SaveChanges();
+
+        // Retournez une réponse de succès
+        return Ok(new { message = "Réservation simulée avec succès." });
+    }
+
+    return BadRequest("Données de réservation invalides.");
+}
+
+
+>>>>>>> old-origin/master
 
 }

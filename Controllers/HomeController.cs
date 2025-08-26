@@ -1,12 +1,18 @@
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+=======
+>>>>>>> old-origin/master
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Table_Reservation.Models;
 
 namespace Table_Reservation.Controllers
 {
+<<<<<<< HEAD
 
+=======
+>>>>>>> old-origin/master
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,6 +24,7 @@ namespace Table_Reservation.Controllers
 
         public IActionResult Index()
         {
+<<<<<<< HEAD
             return View("~/Views/Home/Index.cshtml");
         }
 
@@ -34,6 +41,18 @@ namespace Table_Reservation.Controllers
         {
             return View();
         }
+=======
+            return View();
+        }
+
+
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+>>>>>>> old-origin/master
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -1,13 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-<<<<<<< HEAD
-namespace Table_Reservation.Views.Payment
-=======
 namespace Table_Reservation.Views.Client
->>>>>>> old-origin/master
 {
-    public class CancelModel : PageModel
+    public class Page_Reservation_ClientModel : PageModel
     {
         public void OnGet()
         {

@@ -1,5 +1,8 @@
 ﻿document.addEventListener("DOMContentLoaded", async () => {
+<<<<<<< HEAD
     // init
+=======
+>>>>>>> old-origin/master
     const canvas = document.getElementById("roomCanvas");
     const ctx = canvas.getContext("2d");
     const sizeSelector = document.getElementById("canvasSizeSelect");
@@ -15,6 +18,7 @@
     const saveCanvasButton = document.getElementById("saveCanvasButton");
 
     let tables = [];
+<<<<<<< HEAD
     let draggingTable = null; // dragging
     let selectedTable = null; // selected
 
@@ -24,6 +28,12 @@
 
 
     // draw tables
+=======
+    let draggingTable = null; // Table en cours de déplacement
+    let selectedTable = null; // Table actuellement sélectionnée
+
+    // Fonction pour dessiner les tables
+>>>>>>> old-origin/master
     function drawTables() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         tables.forEach(table => {
@@ -34,6 +44,7 @@
                 ctx.rotate(Math.PI / 2);
             }
 
+<<<<<<< HEAD
             const radius = 10; // rounded corners
             const x = -table.width / 2;
             const y = -table.height / 2;
@@ -82,6 +93,21 @@
     }
 
     // load tables
+=======
+            ctx.fillStyle = table.selected ? "gray" : "blue";
+            ctx.fillRect(-table.width / 2, -table.height / 2, table.width, table.height);
+            ctx.restore();
+
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(table.name || `Table ${table.id}`, table.x + table.width / 2, table.y + table.height / 2 - 10);
+            ctx.fillText(`(${table.seats} P)`, table.x + table.width / 2, table.y + table.height / 2 + 10);
+        });
+    }
+
+    // Charger les tables depuis la base de données
+>>>>>>> old-origin/master
     function loadTables() {
         fetch('/api/tables')
             .then(response => response.json())
@@ -95,7 +121,11 @@
             .catch(error => console.error("Erreur lors du chargement des tables :", error));
     }
 
+<<<<<<< HEAD
     // resize canvas
+=======
+    // Fonction pour redimensionner le canvas
+>>>>>>> old-origin/master
     function resizeCanvas(scale) {
         const originalWidth = 800;
         canvas.width = originalWidth * scale;
@@ -103,11 +133,16 @@
         drawTables();
     }
 
+<<<<<<< HEAD
     // scale select
+=======
+    // Gestion du redimensionnement via le sélecteur
+>>>>>>> old-origin/master
     sizeSelector.addEventListener("change", (event) => {
         const selectedSize = event.target.value;
 
         if (selectedSize === "1") {
+<<<<<<< HEAD
             canvas.width = 800;
             canvas.height = 600;
         } else if (selectedSize === "1.50") {
@@ -115,6 +150,15 @@
             canvas.height = 600;
         } else if (selectedSize === "1.90") {
             canvas.width = 1520;
+=======
+            canvas.width = 800; // Taille par défaut
+            canvas.height = 600;
+        } else if (selectedSize === "1.50") {
+            canvas.width = 1200; // Taille moyenne
+            canvas.height = 600;
+        } else if (selectedSize === "1.90") {
+            canvas.width = 1520; // Taille large
+>>>>>>> old-origin/master
             canvas.height = 600;
         }
 
@@ -122,7 +166,11 @@
         drawTables();
     });
 
+<<<<<<< HEAD
     // add table
+=======
+    // Ajouter une nouvelle table
+>>>>>>> old-origin/master
     addTableButton.addEventListener("click", () => {
         const seats = parseInt(document.getElementById("seatsInput").value);
         if (seats < 2 || seats > 10 || seats % 2 !== 0) {
@@ -145,7 +193,11 @@
     });
 
 
+<<<<<<< HEAD
     // rotate table
+=======
+    /** Faire pivoter la table sélectionnée */
+>>>>>>> old-origin/master
     function rotateTable() {
         if (!selectedTable) {
             alert('Veuillez sélectionner une table pour la faire pivoter.');
@@ -155,7 +207,11 @@
         drawTables();
     }
 
+<<<<<<< HEAD
     // delete table
+=======
+    // Supprimer une table sélectionnée
+>>>>>>> old-origin/master
     deleteTableButton.addEventListener("click", () => {
         if (!selectedTable) {
             alert("Veuillez sélectionner une table à supprimer.");
@@ -166,7 +222,11 @@
         drawTables();
     });
 
+<<<<<<< HEAD
     // save tables
+=======
+    // Sauvegarder les tables dans la base de données
+>>>>>>> old-origin/master
     saveTablesButton.addEventListener("click", () => {
         const dataToSend = tables.map(({ x, y, width, height, seats, rotated }) => ({
             x: Math.round(x),
@@ -190,7 +250,11 @@
             .catch(error => alert(`Erreur : ${error.message}`));
     });
 
+<<<<<<< HEAD
     // load canvas size
+=======
+    // Charger les dimensions du canvas depuis la base de données
+>>>>>>> old-origin/master
     async function loadCanvasSize() {
         try {
             const response = await fetch('/api/canvas/get');
@@ -207,7 +271,11 @@
         }
     }
 
+<<<<<<< HEAD
     // save canvas size
+=======
+    // Sauvegarder les dimensions du canvas
+>>>>>>> old-origin/master
     saveCanvasButton.addEventListener("click", () => {
         const dataToSend = {
             width: canvas.width,
@@ -232,7 +300,11 @@
             });
     });
 
+<<<<<<< HEAD
     // select table
+=======
+    // Gestion de la sélection d'une table
+>>>>>>> old-origin/master
     canvas.addEventListener("mousedown", (e) => {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -274,7 +346,11 @@
         draggingTable = null;
     });
 
+<<<<<<< HEAD
     // open rename modal
+=======
+    // Gestion du clic sur "Modifier le nom"
+>>>>>>> old-origin/master
     modifyNameButton.addEventListener("click", () => {
         if (!selectedTable) {
             alert("Veuillez sélectionner une table en cliquant dessus.");
@@ -326,14 +402,21 @@
         }
     });
 
+<<<<<<< HEAD
     // init
+=======
+    // Charger les tables et dimensions au démarrage
+>>>>>>> old-origin/master
     const defaultCanvasSize = await loadCanvasSize();
     canvas.width = defaultCanvasSize.width;
     canvas.height = defaultCanvasSize.height;
     loadTables();
+<<<<<<< HEAD
 
 
 
 
 
+=======
+>>>>>>> old-origin/master
 });

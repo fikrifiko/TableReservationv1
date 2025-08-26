@@ -1,5 +1,6 @@
 ﻿/* Centrer la page */
 body {
+<<<<<<< HEAD
     margin: 30px;
     padding: 0;
     display: flex; /* Cache tout par défaut */
@@ -7,6 +8,15 @@ body {
     align-items: center;
     min-height: 100vh;
     background-color: #000 !important;
+=======
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5; /* Couleur de fond */
+>>>>>>> old-origin/master
     font-family: Arial, sans-serif;
 }
 
@@ -16,9 +26,15 @@ body {
     max-width: 2000px;
     width: 100%;
     padding: 20px;
+<<<<<<< HEAD
     background-color: #f4f1ea; /* Blanc cassé élégant */
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+=======
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+>>>>>>> old-origin/master
 }
 
 <style >
@@ -31,7 +47,11 @@ body {
 </style >
 /* Titre */
 h1 {
+<<<<<<< HEAD
     color: #0056b3; /* Bleu profond et classe */
+=======
+    color: #007bff;
+>>>>>>> old-origin/master
     margin-bottom: 20px;
 }
 
@@ -39,9 +59,16 @@ h1 {
 #roomCanvas {
     margin: 20px auto;
     display: block;
+<<<<<<< HEAD
     border: 1px solid #bbb; /* Gris clair pour éviter un contraste trop dur */
     background-color: #dddddd; /* Gris doux et propre */
     max-width: 100%;
+=======
+    border: 1px solid #ccc;
+    background-color: #eaeaea;
+    max-width: 100%;
+   
+>>>>>>> old-origin/master
 }
 
 /* Contrôles sous le canvas */
@@ -60,7 +87,11 @@ h1 {
 button, input {
     padding: 10px 15px;
     font-size: 14px;
+<<<<<<< HEAD
     border: 1px solid #ccc; /* Gris doux */
+=======
+    border: 1px solid #ddd;
+>>>>>>> old-origin/master
     border-radius: 4px;
     cursor: pointer;
     background-color: #fff;
@@ -68,44 +99,80 @@ button, input {
 }
 
     button:hover {
+<<<<<<< HEAD
         background-color: #e6e6e6;
+=======
+        background-color: #f0f0f0;
+>>>>>>> old-origin/master
     }
 
 /* Boutons spécifiques */
 .btn-primary {
+<<<<<<< HEAD
     background: linear-gradient(135deg, #0056b3, #003c80); /* Dégradé bleu moderne */
+=======
+    background-color: #007bff;
+>>>>>>> old-origin/master
     color: white;
 }
 
     .btn-primary:hover {
+<<<<<<< HEAD
         background: linear-gradient(135deg, #004494, #002f66);
     }
 
 .btn-danger {
     background: linear-gradient(135deg, #dc3545, #b71c1c); /* Dégradé rouge classe */
+=======
+        background-color: #0056b3;
+    }
+
+.btn-danger {
+    background-color: #dc3545;
+>>>>>>> old-origin/master
     color: white;
 }
 
     .btn-danger:hover {
+<<<<<<< HEAD
         background: linear-gradient(135deg, #b71c1c, #9a0000);
     }
 
 .btn-success {
     background: linear-gradient(135deg, #28a745, #1e7e34); /* Dégradé vert soft */
+=======
+        background-color: #b71c1c;
+    }
+
+.btn-success {
+    background-color: #28a745;
+>>>>>>> old-origin/master
     color: white;
 }
 
     .btn-success:hover {
+<<<<<<< HEAD
         background: linear-gradient(135deg, #218838, #166d28);
     }
 
 .btn-info {
     background: linear-gradient(135deg, #17a2b8, #138496); /* Dégradé bleu cyan */
+=======
+        background-color: #218838;
+    }
+
+.btn-info {
+    background-color: #17a2b8;
+>>>>>>> old-origin/master
     color: white;
 }
 
     .btn-info:hover {
+<<<<<<< HEAD
         background: linear-gradient(135deg, #138496, #0e6372);
+=======
+        background-color: #138496;
+>>>>>>> old-origin/master
     }
 
 input[type="number"] {
@@ -120,7 +187,11 @@ input[type="number"] {
     left: 0;
     width: 100%;
     height: 100%;
+<<<<<<< HEAD
     background: rgba(0, 0, 0, 0.5); /* Fond sombre mais léger */
+=======
+    background: rgba(0, 0, 0, 0.6);
+>>>>>>> old-origin/master
     display: flex;
     justify-content: center;
     align-items: center;
@@ -128,10 +199,18 @@ input[type="number"] {
 }
 
 .modal-content {
+<<<<<<< HEAD
     background: linear-gradient(135deg, #ffffff, #f2f2f2); /* Dégradé blanc propre */
+=======
+    background: white;
+>>>>>>> old-origin/master
     padding: 20px;
     border-radius: 8px;
     width: 300px;
     text-align: center;
+<<<<<<< HEAD
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+=======
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+>>>>>>> old-origin/master
 }

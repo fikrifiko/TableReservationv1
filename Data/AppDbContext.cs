@@ -4,10 +4,13 @@ using Table_Reservation.Models;
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+<<<<<<< HEAD
     // Autres DbSets pour vos tables
     public DbSet<AdministratorModel> Administrators { get; set; }
 
  
+=======
+>>>>>>> old-origin/master
 
     public DbSet<TableModel> Tables { get; set; } 
     public DbSet<CanvasModel> CanvasModels { get; set; } 
@@ -16,6 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<ClientModel> ClientModels { get; set; }
 
 
+<<<<<<< HEAD
     public DbSet<PdfFileModel> PdfFiles { get; set; }
 
 
@@ -24,6 +28,11 @@ public class AppDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
 
+=======
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+>>>>>>> old-origin/master
         modelBuilder.Entity<TableModel>()
             .Property(t => t.Id)
             .ValueGeneratedOnAdd();
@@ -52,12 +61,16 @@ public class AppDbContext : DbContext
 
 
 
+<<<<<<< HEAD
         // Configuration de la table Administrators
         modelBuilder.Entity<AdministratorModel>().HasKey(a => a.Id);
         modelBuilder.Entity<AdministratorModel>().Property(a => a.Username).IsRequired().HasMaxLength(50);
         modelBuilder.Entity<AdministratorModel>().Property(a => a.Password).IsRequired();
         modelBuilder.Entity<AdministratorModel>().Property(a => a.Email).IsRequired().HasMaxLength(100);
         modelBuilder.Entity<AdministratorModel>().Property(a => a.CreatedAt).HasDefaultValueSql("GETDATE()");
+=======
+
+>>>>>>> old-origin/master
 
 
     }

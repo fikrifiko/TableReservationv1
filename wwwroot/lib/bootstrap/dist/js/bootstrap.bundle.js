@@ -116,8 +116,12 @@
       obj = obj[0];
     }
 
+<<<<<<< HEAD
       return typeof obj.
           Type !== 'undefined';
+=======
+    return typeof obj.nodeType !== 'undefined';
+>>>>>>> old-origin/master
   };
 
   const getElement = obj => {
