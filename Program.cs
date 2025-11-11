@@ -197,8 +197,13 @@ app.Use(async (context, next) =>
     context.Response.Headers["X-Frame-Options"] = "DENY";
     context.Response.Headers["Referrer-Policy"] = "no-referrer";
     context.Response.Headers["Permissions-Policy"] = "geolocation=()";
-    // CSP basique: ajuster si besoin (peut casser des scripts externes)
-    context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'";
+    // CSP (dev: autorise connexions localhost et websockets pour BrowserLink/refresh)
+    var csp = "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'";
+    if (app.Environment.IsDevelopment())
+    {
+        csp += "; connect-src 'self' http://localhost:* ws: wss:";
+    }
+    context.Response.Headers["Content-Security-Policy"] = csp;
     await next();
 });
 
@@ -242,4 +247,3 @@ StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
 
 // Lancer l'application
 app.Run();
-

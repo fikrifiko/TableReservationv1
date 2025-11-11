@@ -173,6 +173,16 @@ document.addEventListener("DOMContentLoaded", function () {
         .finally(() => setLoadingMessage(false));
 
     populateStartTimeDropdown();
+
+    // bind modal controls (no inline handlers)
+    const closeBtn = document.getElementById("reservationCloseBtn");
+    if (closeBtn) closeBtn.addEventListener("click", closeReservationModal);
+    const cancelBtn = document.getElementById("cancelReserveBtn");
+    if (cancelBtn) cancelBtn.addEventListener("click", closeReservationModal);
+    const reserveBtn = document.getElementById("reserveBtn");
+    if (reserveBtn) reserveBtn.addEventListener("click", submitReservation);
+    const overlay = document.getElementById("reservationOverlay");
+    if (overlay) overlay.addEventListener("click", closeReservationModal);
 });
 
 // populate time dropdown
@@ -242,11 +252,15 @@ function openReservationModal(table) {
     
     // show modal
     document.getElementById("reservationModal").style.display = "flex";
+    const overlay = document.getElementById("reservationOverlay");
+    if (overlay) overlay.style.display = "block";
 }
 
 // close modal
 function closeReservationModal() {
     document.getElementById("reservationModal").style.display = "none";
+    const overlay = document.getElementById("reservationOverlay");
+    if (overlay) overlay.style.display = "none";
 }
 
 // submit reservation

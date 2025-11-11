@@ -34,6 +34,10 @@ namespace Table_Reservation.Controllers
         {
             return View();
         }
+        public IActionResult Terms()
+        {
+            return View("~/Views/Home/Terms.cshtml");
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

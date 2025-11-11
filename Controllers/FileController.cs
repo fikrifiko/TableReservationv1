@@ -50,21 +50,30 @@ public class FileController : Controller
             return BadRequest("Fichier trop volumineux (max 10MB).");
         }
 
-        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-        if (!Directory.Exists(uploadsFolder))
+        try
         {
-            Directory.CreateDirectory(uploadsFolder);
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            // Upload des trois fichiers PDF avec des noms spécifiques
+            await SavePdfFileNoCommit(fileFr, "menu_fr.pdf", uploadsFolder);
+            await SavePdfFileNoCommit(fileEn, "menu_en.pdf", uploadsFolder);
+            await SavePdfFileNoCommit(fileNl, "menu_nl.pdf", uploadsFolder);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ViewPdf");
         }
-
-        // Upload des trois fichiers PDF avec des noms spécifiques
-        await SavePdfFile(fileFr, "menu_fr.pdf", uploadsFolder);
-        await SavePdfFile(fileEn, "menu_en.pdf", uploadsFolder);
-        await SavePdfFile(fileNl, "menu_nl.pdf", uploadsFolder);
-
-        return RedirectToAction("ViewPdf");
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur UploadPdf: {ex}");
+            return StatusCode(500, "Erreur serveur lors de l'upload des PDFs.");
+        }
     }
 
-    private async Task SavePdfFile(IFormFile file, string fileName, string folderPath)
+    private async Task SavePdfFileNoCommit(IFormFile file, string fileName, string folderPath)
     {
         string filePath = Path.Combine(folderPath, fileName);
 
@@ -74,18 +83,16 @@ public class FileController : Controller
             System.IO.File.Delete(filePath);
         }
 
-        // Vérifier magic number PDF (%PDF)
-        using (var ms = new MemoryStream())
+        // Vérifier magic number PDF (%PDF) tolérant
+        using var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
+        var bytes = ms.ToArray();
+        if (bytes.Length < 4 ||
+            !(bytes[0] == 0x25 && bytes[1] == 0x50 && bytes[2] == 0x44 && bytes[3] == 0x46)) // %PDF
         {
-            await file.CopyToAsync(ms);
-            var bytes = ms.ToArray();
-            var header = Encoding.ASCII.GetString(bytes.Take(4).ToArray());
-            if (header != "%PDF")
-            {
-                throw new InvalidDataException("Le fichier n'est pas un PDF valide.");
-            }
-            await System.IO.File.WriteAllBytesAsync(filePath, bytes);
+            throw new InvalidDataException("Le fichier n'est pas un PDF valide.");
         }
+        await System.IO.File.WriteAllBytesAsync(filePath, bytes);
 
         // Mettre à jour la base de données avec le nouveau fichier
         var existingPdf = _context.PdfFiles.FirstOrDefault(p => p.FileName == fileName);
@@ -98,8 +105,6 @@ public class FileController : Controller
         {
             _context.PdfFiles.Add(new PdfFileModel { FileName = fileName, FilePath = $"/uploads/{fileName}" });
         }
-
-        await _context.SaveChangesAsync();
     }
 
     public IActionResult ViewPdf(string lang = "fr")

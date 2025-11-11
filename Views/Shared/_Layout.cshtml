@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - Reserva</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Bootstrap CSS (local) -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
 
     <!-- Fichier CSS du layout (séparé du reste) -->
     <link rel="stylesheet" href="~/css/StyleLayout.css">
@@ -24,7 +24,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item"><a class="nav-link" href="/File/ViewPdf">Menu</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#promotions">Promotions</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Home/Terms">Conditions générales</a></li>
                         <li class="nav-item"><a class="nav-link" href="#locations">Emplacements</a></li>
                         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                     </ul>
@@ -50,7 +50,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="adminLoginForm" onsubmit="submitAdminLogin(event)">
+                    <form id="adminLoginForm">
                         <div class="mb-3">
                             <label for="username" class="form-label">Nom d'utilisateur :</label>
                             <input type="text" id="username" name="username" class="form-control" required>
@@ -61,7 +61,7 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-primary">Se connecter</button>
-                            <button type="button" class="btn btn-secondary" onclick="closeAdminModal()">Annuler</button>
+                            <button type="button" class="btn btn-secondary" id="adminCancelBtn">Annuler</button>
                         </div>
                     </form>
                 </div>
@@ -70,13 +70,25 @@
     </div>
 
     <!-- Overlay pour fond sombre -->
-    <div id="modalOverlay" class="modal-overlay" onclick="closeAdminModal()"></div>
+    <div id="modalOverlay" class="modal-overlay"></div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS (local) -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Fichier JS du layout -->
     <script src="~/js/ScriptHome.js"></script>
+
+    <!-- Cookie consent banner -->
+    <div id="cookieBanner" class="cookie-banner">
+        <div class="cookie-inner">
+            <p>Nous utilisons des cookies nécessaires au fonctionnement du site et, avec votre accord, des cookies de mesure d’audience. <a href="/Home/Terms">En savoir plus</a>.</p>
+            <div class="cookie-actions">
+                <button id="cookieDecline" class="btn btn-secondary btn-sm">Refuser</button>
+                <button id="cookieAccept" class="btn btn-primary btn-sm">Accepter</button>
+            </div>
+        </div>
+    </div>
+    <script src="~/js/CookieConsent.js"></script>
 
 </body>
 </html>
