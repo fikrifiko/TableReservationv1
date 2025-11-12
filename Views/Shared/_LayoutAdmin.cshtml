@@ -1,5 +1,6 @@
-﻿<!DOCTYPE html>
-<html lang="fr">
+﻿@* Using explicit culture-based strings while resources are stabilized *@
+<!DOCTYPE html>
+<html lang="@(System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName ?? "fr")">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,14 +28,32 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="#">Nos Réservations</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Nos clients</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Pub</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Option</a></li>
+                        @{
+                            var isNlAdmin = (System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr") == "nl";
+                        }
+                        <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Onze reserveringen" : "Nos Réservations")</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Onze klanten" : "Nos clients")</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Advertentie" : "Pub")</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Optie" : "Option")</a></li>
                     </ul>
                     <div class="d-flex">
-                            <button type="submit" id="btnAdminLogout" class="btn btn-danger">Déconnexion</button>
-                        
+                            <button type="submit" id="btnAdminLogout" class="btn btn-danger">@(isNlAdmin ? "Uitloggen" : "Déconnexion")</button>
+                            <div class="ms-3">
+                                @{
+                                    var req = Context?.Request;
+                                    var path = req?.Path.Value ?? "/";
+                                    var query = req?.QueryString.Value ?? "";
+                                    var rawReturnUrl = string.IsNullOrEmpty(query) ? path : (path + query);
+                                    var returnUrlEncoded = System.Net.WebUtility.UrlEncode(rawReturnUrl);
+                                    var twoLetter = System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr";
+                                    var isFr = twoLetter == "fr";
+                                }
+                                <div class="lang-toggle @(isFr ? "is-fr" : "is-nl")" role="group" aria-label="Language switch">
+                                    <a class="lang-option nl @(isFr ? "" : "active")" href="/Language/Set?culture=nl&uiCulture=nl&returnUrl=@returnUrlEncoded">NL</a>
+                                    <a class="lang-option fr @(isFr ? "active" : "")" href="/Language/Set?culture=fr-FR&uiCulture=fr-FR&returnUrl=@returnUrlEncoded">FR</a>
+                                    <span class="knob" aria-hidden="true"></span>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>

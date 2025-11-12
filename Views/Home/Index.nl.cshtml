@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Startpagina";
+}
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/StyleHomeIndex.css">
+</head>
+<body class="page-accueil">
+
+    @if (Context.Request.Query["message"] == "deconnected")
+    {
+        <div class="alert alert-info text-center" role="alert" style="margin: 10px 20px;">
+            U bent uitgelogd.
+        </div>
+    }
+
+    <section class="hero container-fluid">
+        <div class="row justify-content-center align-items-center text-center">
+            <div class="col-12 col-md-8">
+                <h1>Restaurant <span>Reserva</span></h1>
+                <p>Een unieke gastronomische ervaring</p>
+                <div class="buttons d-flex flex-column flex-md-row justify-content-center gap-3">
+                    <a href="/Client/PageReservationClient" class="btn btn-lg">Tafel reserveren</a>
+                    <a href="#reservation" class="btn btn-lg">Online bestellen</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <footer>
+        <p>2025 Reserva &#64; Alle rechten voorbehouden.</p>
+    </footer>
+
+</body>
+</html>
+*** End Patch***  }```  #-}
+

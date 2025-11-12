@@ -43,7 +43,10 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Ajouter les services au conteneur
-builder.Services.AddControllersWithViews();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization();
 
 // Ajouter le service Entity Framework Core avec SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -182,7 +185,23 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Localization (must run before routing so views pick correct culture)
+var supportedCultures = new[] { "fr-FR", "nl" };
+var localizationOptions = new Microsoft.AspNetCore.Builder.RequestLocalizationOptions()
+    .SetDefaultCulture("fr-FR")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+localizationOptions.RequestCultureProviders = new System.Collections.Generic.List<Microsoft.AspNetCore.Localization.IRequestCultureProvider>
+{
+    new Microsoft.AspNetCore.Localization.CookieRequestCultureProvider(),
+    new Microsoft.AspNetCore.Localization.QueryStringRequestCultureProvider(),
+    new Microsoft.AspNetCore.Localization.AcceptLanguageHeaderRequestCultureProvider()
+};
+app.UseRequestLocalization(localizationOptions);
+
 app.UseRouting();
+
 app.UseCors("AllowLocalhost");
 app.UseRateLimiter();
 

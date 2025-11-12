@@ -5,7 +5,7 @@ header {
     position: fixed;
     width: 100%;
     top: 0;
-    z-index: 1000;
+    z-index: 3000;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
@@ -16,7 +16,7 @@ header {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 3000;
 }
 
 .navbar .container-fluid {
@@ -124,4 +124,54 @@ header {
 }
 .cookie-banner.show {
     display: block;
+}
+
+/* Ensure dropdown renders above hero */
+.dropdown-menu {
+    z-index: 4000;
+}
+
+/* language toggle */
+.lang-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 2px 6px;
+    height: 28px;
+    min-width: calc(88px + 1cm);
+    gap: 12px;
+    z-index: 3500;
+}
+.lang-toggle .lang-option {
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    position: relative;
+    z-index: 2;
+}
+.lang-toggle .lang-option.fr {
+    margin-left: 1cm; /* demande: FR un peu plus loin que NL (+1cm) */
+}
+.lang-toggle .lang-option.active {
+    font-weight: 700;
+}
+.lang-toggle .knob {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    width: 40px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 16px;
+    transition: transform .2s ease;
+    z-index: 1;
+}
+/* FR -> knob à droite, NL -> knob à gauche */
+.lang-toggle.is-fr .knob {
+    transform: translateX(calc(42px + 1cm));
+}
+.lang-toggle.is-nl .knob {
+    transform: translateX(2px);
 }

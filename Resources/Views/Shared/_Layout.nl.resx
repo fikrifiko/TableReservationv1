@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="ConditionsGenerales" xml:space="preserve">
+    <value>Algemene voorwaarden</value>
+  </data>
+  <data name="Emplacements" xml:space="preserve">
+    <value>Locaties</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="Reserver" xml:space="preserve">
+    <value>Reserveren</value>
+  </data>
+  <data name="SeConnecter" xml:space="preserve">
+    <value>Inloggen</value>
+  </data>
+  <data name="ConnexionAdministrateur" xml:space="preserve">
+    <value>Beheerderslogin</value>
+  </data>
+  <data name="NomUtilisateur" xml:space="preserve">
+    <value>Gebruikersnaam</value>
+  </data>
+  <data name="MotDePasse" xml:space="preserve">
+    <value>Wachtwoord</value>
+  </data>
+  <data name="Annuler" xml:space="preserve">
+    <value>Annuleren</value>
+  </data>
+  <data name="CookiesText" xml:space="preserve">
+    <value>We gebruiken noodzakelijke cookies voor de werking van de site en, met uw toestemming, cookies voor publieksmeting</value>
+  </data>
+  <data name="EnSavoirPlus" xml:space="preserve">
+    <value>Meer weten</value>
+  </data>
+  <data name="Refuser" xml:space="preserve">
+    <value>Weigeren</value>
+  </data>
+  <data name="Accepter" xml:space="preserve">
+    <value>Accepteren</value>
+  </data>
+</root>
+

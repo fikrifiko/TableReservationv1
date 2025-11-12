@@ -1,5 +1,44 @@
 ﻿document.addEventListener("DOMContentLoaded", async () => {
-    // init
+    const langCode = (document.documentElement.lang || "fr").toLowerCase();
+    const isNl = langCode.startsWith("nl");
+    const strings = {
+        fr: {
+            invalidSeats: "Veuillez entrer un nombre valide (2, 4, 6, 8 ou 10).",
+            rotateSelect: "Veuillez sélectionner une table pour la faire pivoter.",
+            deleteSelect: "Veuillez sélectionner une table à supprimer.",
+            saveTablesSuccess: "Tables enregistrées avec succès !",
+            saveTablesError: "Erreur lors de l'enregistrement.",
+            canvasSizeUnavailable: "La taille du canvas n'est pas disponible.",
+            genericErrorPrefix: "Erreur :",
+            loadTablesError: "Erreur lors du chargement des tables :",
+            loadCanvasError: "Erreur lors du chargement de la taille du canvas :",
+            canvasSaveSuccess: "Dimensions du canvas enregistrées avec succès !",
+            canvasSaveError: "Erreur lors de l'enregistrement des dimensions.",
+            selectTableClick: "Veuillez sélectionner une table en cliquant dessus.",
+            enterNewName: "Veuillez entrer un nouveau nom pour la table.",
+            tableRenameSuccess: name => `Le nom de la table a été mis à jour en "${name}".`,
+            tableRenameErrorPrefix: "Erreur lors de la sauvegarde dans la base de données :"
+        },
+        nl: {
+            invalidSeats: "Voer een geldig aantal in (2, 4, 6, 8 of 10).",
+            rotateSelect: "Selecteer een tafel om deze te draaien.",
+            deleteSelect: "Selecteer een tafel om te verwijderen.",
+            saveTablesSuccess: "Tafels succesvol opgeslagen!",
+            saveTablesError: "Fout bij het opslaan.",
+            canvasSizeUnavailable: "De canvasgrootte is niet beschikbaar.",
+            genericErrorPrefix: "Fout:",
+            loadTablesError: "Fout bij het laden van de tafels:",
+            loadCanvasError: "Fout bij het laden van de canvasgrootte:",
+            canvasSaveSuccess: "Canvasafmetingen succesvol opgeslagen!",
+            canvasSaveError: "Fout bij het opslaan van de afmetingen.",
+            selectTableClick: "Selecteer een tafel door erop te klikken.",
+            enterNewName: "Voer een nieuwe naam voor de tafel in.",
+            tableRenameSuccess: name => `De tafelnaam is bijgewerkt naar "${name}".`,
+            tableRenameErrorPrefix: "Fout bij het opslaan in de database:"
+        }
+    };
+    const t = isNl ? strings.nl : strings.fr;
+
     const canvas = document.getElementById("roomCanvas");
     const ctx = canvas.getContext("2d");
     const sizeSelector = document.getElementById("canvasSizeSelect");
@@ -8,22 +47,15 @@
     const addTableButton = document.getElementById("addTableButton");
     const deleteTableButton = document.getElementById("deleteTableButton");
     const saveTablesButton = document.getElementById("saveButton");
-
-    document.getElementById('rotateTableButton').addEventListener('click', rotateTable);
-
-
+    const rotateButton = document.getElementById("rotateTableButton");
     const saveCanvasButton = document.getElementById("saveCanvasButton");
 
+    rotateButton.addEventListener("click", rotateTable);
+
     let tables = [];
-    let draggingTable = null; // dragging
-    let selectedTable = null; // selected
+    let draggingTable = null;
+    let selectedTable = null;
 
-
-
-
-
-
-    // draw tables
     function drawTables() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         tables.forEach(table => {
@@ -34,7 +66,7 @@
                 ctx.rotate(Math.PI / 2);
             }
 
-            const radius = 10; // rounded corners
+            const radius = 10;
             const x = -table.width / 2;
             const y = -table.height / 2;
             const width = table.width;
@@ -52,28 +84,22 @@
             ctx.quadraticCurveTo(x, y, x + radius, y);
             ctx.closePath();
 
-            // shadow
             ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
             ctx.shadowBlur = 8;
             ctx.shadowOffsetX = 4;
             ctx.shadowOffsetY = 4;
 
-            ctx.fillStyle ="#6D9F71";
-
-            // fill
+            ctx.fillStyle = "#6D9F71";
             ctx.fill();
 
-            // reset shadow
             ctx.shadowColor = "transparent";
 
-            // label
             ctx.fillStyle = "white";
             ctx.font = "bold 14px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(table.name, 0, -8);
 
-            // seats
             ctx.font = "12px Arial";
             ctx.fillText(`(${table.seats} P)`, 0, 10);
 
@@ -81,21 +107,19 @@
         });
     }
 
-    // load tables
     function loadTables() {
-        fetch('/api/tables')
+        fetch("/api/tables")
             .then(response => response.json())
             .then(data => {
                 tables = data.map(table => ({
                     ...table,
-                    selected: false,
+                    selected: false
                 }));
                 drawTables();
             })
-            .catch(error => console.error("Erreur lors du chargement des tables :", error));
+            .catch(error => console.error(t.loadTablesError, error));
     }
 
-    // resize canvas
     function resizeCanvas(scale) {
         const originalWidth = 800;
         canvas.width = originalWidth * scale;
@@ -103,8 +127,7 @@
         drawTables();
     }
 
-    // scale select
-    sizeSelector.addEventListener("change", (event) => {
+    sizeSelector.addEventListener("change", event => {
         const selectedSize = event.target.value;
 
         if (selectedSize === "1") {
@@ -122,43 +145,39 @@
         drawTables();
     });
 
-    // add table
     addTableButton.addEventListener("click", () => {
         const seats = parseInt(document.getElementById("seatsInput").value);
         if (seats < 2 || seats > 10 || seats % 2 !== 0) {
-            alert("Veuillez entrer un nombre valide (2, 4, 6, 8 ou 10).");
+            alert(t.invalidSeats);
             return;
         }
         const newTable = {
             id: tables.length + 1,
-            name: `Table ${tables.length + 1}`,
+            name: `${isNl ? "Tafel" : "Table"} ${tables.length + 1}`,
             x: 100,
             y: 100,
             width: 50 * (seats / 2),
             height: 50,
             seats: seats,
             rotated: false,
-            selected: false,
+            selected: false
         };
         tables.push(newTable);
         drawTables();
     });
 
-
-    // rotate table
     function rotateTable() {
         if (!selectedTable) {
-            alert('Veuillez sélectionner une table pour la faire pivoter.');
+            alert(t.rotateSelect);
             return;
         }
         selectedTable.rotated = !selectedTable.rotated;
         drawTables();
     }
 
-    // delete table
     deleteTableButton.addEventListener("click", () => {
         if (!selectedTable) {
-            alert("Veuillez sélectionner une table à supprimer.");
+            alert(t.deleteSelect);
             return;
         }
         tables = tables.filter(table => table !== selectedTable);
@@ -166,7 +185,6 @@
         drawTables();
     });
 
-    // save tables
     saveTablesButton.addEventListener("click", () => {
         const dataToSend = tables.map(({ x, y, width, height, seats, rotated }) => ({
             x: Math.round(x),
@@ -175,65 +193,62 @@
             height: Math.round(height),
             seats: seats,
             rotated: rotated,
-            name: "Table",
+            name: isNl ? "Tafel" : "Table"
         }));
 
-        fetch('/api/tables', {
+        fetch("/api/tables", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dataToSend),
+            body: JSON.stringify(dataToSend)
         })
             .then(response => {
-                if (response.ok) alert("Tables enregistrées avec succès !");
-                else throw new Error("Erreur lors de l'enregistrement.");
+                if (response.ok) alert(t.saveTablesSuccess);
+                else throw new Error(t.saveTablesError);
             })
-            .catch(error => alert(`Erreur : ${error.message}`));
+            .catch(error => alert(`${t.genericErrorPrefix} ${error.message}`));
     });
 
-    // load canvas size
     async function loadCanvasSize() {
         try {
-            const response = await fetch('/api/canvas/get');
+            const response = await fetch("/api/canvas/get");
             const data = await response.json();
             if (data.width && data.height) {
                 canvas.width = data.width;
                 canvas.height = data.height;
                 return { width: data.width, height: data.height };
             }
-            throw new Error("La taille du canvas n'est pas disponible.");
+            throw new Error(t.canvasSizeUnavailable);
         } catch (error) {
-            console.error("Erreur lors du chargement de la taille du canvas :", error);
+            console.error(t.loadCanvasError, error);
             return { width: 800, height: 600 };
         }
     }
 
-    // save canvas size
     saveCanvasButton.addEventListener("click", () => {
         const dataToSend = {
             width: canvas.width,
-            height: canvas.height,
+            height: canvas.height
         };
 
-        fetch('/api/canvas/save', {
+        fetch("/api/canvas/save", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dataToSend),
+            body: JSON.stringify(dataToSend)
         })
             .then(response => {
                 if (response.ok) {
-                    alert("Dimensions du canvas enregistrées avec succès !");
+                    alert(t.canvasSaveSuccess);
                 } else {
-                    throw new Error("Erreur lors de l'enregistrement des dimensions.");
+                    throw new Error(t.canvasSaveError);
                 }
             })
             .catch(error => {
-                console.error("Erreur :", error.message);
-                alert(`Erreur : ${error.message}`);
+                console.error(t.genericErrorPrefix, error.message);
+                alert(`${t.genericErrorPrefix} ${error.message}`);
             });
     });
 
-    // select table
-    canvas.addEventListener("mousedown", (e) => {
+    canvas.addEventListener("mousedown", e => {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
@@ -258,7 +273,7 @@
         drawTables();
     });
 
-    canvas.addEventListener("mousemove", (e) => {
+    canvas.addEventListener("mousemove", e => {
         if (!draggingTable) return;
         const rect = canvas.getBoundingClientRect();
         draggingTable.x = e.clientX - rect.left - draggingTable.width / 2;
@@ -274,10 +289,9 @@
         draggingTable = null;
     });
 
-    // open rename modal
     modifyNameButton.addEventListener("click", () => {
         if (!selectedTable) {
-            alert("Veuillez sélectionner une table en cliquant dessus.");
+            alert(t.selectTableClick);
             return;
         }
 
@@ -291,7 +305,7 @@
         const newName = document.getElementById("tableNameInput").value.trim();
 
         if (!newName) {
-            alert("Veuillez entrer un nouveau nom pour la table.");
+            alert(t.enterNewName);
             return;
         }
 
@@ -301,39 +315,31 @@
             fetch(`/api/tables/${selectedTable.id}`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ name: newName }),
+                body: JSON.stringify({ name: newName })
             })
-
-
                 .then(response => {
                     if (response.ok) {
                         drawTables();
-                        alert(`Le nom de la table a été mis à jour en "${newName}".`);
+                        alert(t.tableRenameSuccess(newName));
                         const tableNameModal = bootstrap.Modal.getInstance(document.getElementById("tableNameModal"));
                         tableNameModal.hide();
                     } else {
                         return response.json().then(error => {
-                            throw new Error(error.message || "Erreur lors de la mise à jour.");
+                            throw new Error(error.message || t.saveTablesError);
                         });
                     }
                 })
                 .catch(error => {
-                    console.error("Erreur :", error);
-                    alert(`Erreur lors de la sauvegarde dans la base de données : ${error.message}`);
+                    console.error(t.genericErrorPrefix, error);
+                    alert(`${t.tableRenameErrorPrefix} ${error.message}`);
                 });
         }
     });
 
-    // init
     const defaultCanvasSize = await loadCanvasSize();
     canvas.width = defaultCanvasSize.width;
     canvas.height = defaultCanvasSize.height;
     loadTables();
-
-
-
-
-
 });

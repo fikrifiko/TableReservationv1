@@ -1,5 +1,6 @@
-﻿<!DOCTYPE html>
-<html lang="fr">
+﻿@* Using explicit culture-based strings to ensure correct display while we stabilize resources *@
+<!DOCTYPE html>
+<html lang="@(System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName ?? "fr")">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,14 +24,34 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
+                        @{
+                            var twoLetterNav = System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr";
+                            var isNlNav = twoLetterNav == "nl";
+                        }
                         <li class="nav-item"><a class="nav-link" href="/File/ViewPdf">Menu</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Home/Terms">Conditions générales</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#locations">Emplacements</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Home/Terms">@(isNlNav ? "Algemene voorwaarden" : "Conditions générales")</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#locations">@(isNlNav ? "Locaties" : "Emplacements")</a></li>
                         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                     </ul>
-                    <div class="d-flex">
-                        <a href="/Client/PageReservationClient" class="btn btn-success mx-2">Réserver</a>
-                        <a href="#" class="btn btn-outline-light" id="btnAdminLogin">Se connecter</a>
+                    <div class="d-flex align-items-center">
+                        <a href="/Client/PageReservationClient" class="btn btn-success mx-2">@(isNlNav ? "Reserveren" : "Réserver")</a>
+                        <a href="#" class="btn btn-outline-light" id="btnAdminLogin">@(isNlNav ? "Inloggen" : "Se connecter")</a>
+                        <div class="ms-3">
+                            @{
+                                var req = Context?.Request;
+                                var path = req?.Path.Value ?? "/";
+                                var query = req?.QueryString.Value ?? "";
+                                var rawReturnUrl = string.IsNullOrEmpty(query) ? path : (path + query);
+                                var returnUrlEncoded = System.Net.WebUtility.UrlEncode(rawReturnUrl);
+                                var twoLetter = System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr";
+                                var isFr = twoLetter == "fr";
+                            }
+                            <div class="lang-toggle @(isFr ? "is-fr" : "is-nl")" role="group" aria-label="Language switch">
+                                <a class="lang-option nl @(isFr ? "" : "active")" href="/Language/Set?culture=nl&uiCulture=nl&returnUrl=@returnUrlEncoded">NL</a>
+                                <a class="lang-option fr @(isFr ? "active" : "")" href="/Language/Set?culture=fr-FR&uiCulture=fr-FR&returnUrl=@returnUrlEncoded">FR</a>
+                                <span class="knob" aria-hidden="true"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -46,22 +67,25 @@
         <div id="adminModal1" class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Connexion Administrateur</h5>
+                    @{
+                        var isNlModal = (System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr") == "nl";
+                    }
+                    <h5 class="modal-title">@(isNlModal ? "Beheerderslogin" : "Connexion Administrateur")</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="adminLoginForm">
                         <div class="mb-3">
-                            <label for="username" class="form-label">Nom d'utilisateur :</label>
+                            <label for="username" class="form-label">@(isNlModal ? "Gebruikersnaam" : "Nom d'utilisateur") :</label>
                             <input type="text" id="username" name="username" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Mot de passe :</label>
+                            <label for="password" class="form-label">@(isNlModal ? "Wachtwoord" : "Mot de passe") :</label>
                             <input type="password" id="password" name="password" class="form-control" required>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Se connecter</button>
-                            <button type="button" class="btn btn-secondary" id="adminCancelBtn">Annuler</button>
+                            <button type="submit" class="btn btn-primary">@(isNlModal ? "Inloggen" : "Se connecter")</button>
+                            <button type="button" class="btn btn-secondary" id="adminCancelBtn">@(isNlModal ? "Annuleren" : "Annuler")</button>
                         </div>
                     </form>
                 </div>
@@ -81,10 +105,13 @@
     <!-- Cookie consent banner -->
     <div id="cookieBanner" class="cookie-banner">
         <div class="cookie-inner">
-            <p>Nous utilisons des cookies nécessaires au fonctionnement du site et, avec votre accord, des cookies de mesure d’audience. <a href="/Home/Terms">En savoir plus</a>.</p>
+            @{
+                var isNlCookie = (System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr") == "nl";
+            }
+            <p>@(isNlCookie ? "We gebruiken noodzakelijke cookies voor de werking van de site en, met uw toestemming, cookies voor publieksmeting" : "Nous utilisons des cookies nécessaires au fonctionnement du site et, avec votre accord, des cookies de mesure d’audience") <a href="/Home/Terms">@(isNlCookie ? "Meer weten" : "En savoir plus")</a>.</p>
             <div class="cookie-actions">
-                <button id="cookieDecline" class="btn btn-secondary btn-sm">Refuser</button>
-                <button id="cookieAccept" class="btn btn-primary btn-sm">Accepter</button>
+                <button id="cookieDecline" class="btn btn-secondary btn-sm">@(isNlCookie ? "Weigeren" : "Refuser")</button>
+                <button id="cookieAccept" class="btn btn-primary btn-sm">@(isNlCookie ? "Accepteren" : "Accepter")</button>
             </div>
         </div>
     </div>

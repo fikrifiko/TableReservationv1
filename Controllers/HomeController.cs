@@ -18,7 +18,7 @@ namespace Table_Reservation.Controllers
 
         public IActionResult Index()
         {
-            return View("~/Views/Home/Index.cshtml");
+            return View();
         }
 
         public IActionResult Privacy()
@@ -36,7 +36,7 @@ namespace Table_Reservation.Controllers
         }
         public IActionResult Terms()
         {
-            return View("~/Views/Home/Terms.cshtml");
+            return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
