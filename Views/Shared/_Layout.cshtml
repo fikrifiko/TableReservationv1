@@ -34,8 +34,36 @@
                         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                     </ul>
                     <div class="d-flex align-items-center">
+                        @{
+                            var clientId = Context.Session.GetInt32("ClientId");
+                            var clientName = Context.Session.GetString("ClientName") ?? string.Empty;
+                            var clientLoggedIn = clientId.HasValue;
+                            var clientLoginLabel = isNlNav ? "Inloggen" : "Se connecter";
+                            var clientLogoutLabel = isNlNav ? "Uitloggen" : "Se déconnecter";
+                            var clientReservationsLabel = isNlNav ? "Mijn reserveringen" : "Mes réservations";
+                            var greetingLabel = isNlNav ? "Hallo" : "Bonjour";
+                            var adminLoginLabel = isNlNav ? "Admin" : "Admin";
+                            var clientFallback = isNlNav ? "Klant" : "Client";
+                        }
                         <a href="/Client/PageReservationClient" class="btn btn-success mx-2">@(isNlNav ? "Reserveren" : "Réserver")</a>
-                        <a href="#" class="btn btn-outline-light" id="btnAdminLogin">@(isNlNav ? "Inloggen" : "Se connecter")</a>
+                        @if (clientLoggedIn)
+                        {
+                            <div class="dropdown mx-2">
+                                <a class="btn btn-outline-light dropdown-toggle" href="#" id="clientMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @($"{greetingLabel} {(string.IsNullOrWhiteSpace(clientName) ? clientFallback : clientName)}")
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="clientMenuButton">
+                                    <li><a class="dropdown-item" href="/ClientAccount/Reservations">@clientReservationsLabel</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><button type="button" class="dropdown-item" id="clientLogoutBtn">@clientLogoutLabel</button></li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="#" class="btn btn-outline-light mx-2" id="btnClientLogin" data-bs-toggle="modal" data-bs-target="#clientLoginModal" role="button">@clientLoginLabel</a>
+                        }
+                        <a href="#" class="btn btn-outline-light" id="btnAdminLogin">@adminLoginLabel</a>
                         <div class="ms-3">
                             @{
                                 var req = Context?.Request;
@@ -60,6 +88,46 @@
 
     <div class="container mt-4">
         @RenderBody()
+    </div>
+
+    <!-- MODAL CLIENT -->
+    <div id="clientLoginModal" class="modal fade" tabindex="-1" aria-labelledby="clientLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    @{
+                        var isNlClientModal = (System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr") == "nl";
+                        var clientFormRequired = isNlClientModal ? "Vul alle velden in." : "Veuillez remplir tous les champs.";
+                        var clientFormInvalidCredentials = isNlClientModal ? "Ongeldig e-mailadres of wachtwoord." : "Email ou mot de passe incorrect.";
+                        var clientFormGenericError = isNlClientModal ? "Er is een fout opgetreden. Probeer het opnieuw." : "Une erreur est survenue. Veuillez réessayer.";
+                        var clientFormHelper = isNlClientModal ? "Gebruik hetzelfde telefoonnummer als tijdens de reservering." : "Utilisez le même numéro de téléphone que lors de la réservation.";
+                    }
+                    <h5 class="modal-title">@(isNlClientModal ? "Klantlogin" : "Connexion Client")</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="clientLoginError" class="alert alert-danger d-none"></div>
+                    <form id="clientLoginForm"
+                          data-error-required="@clientFormRequired"
+                          data-error-credentials="@clientFormInvalidCredentials"
+                          data-error-generic="@clientFormGenericError">
+                        <div class="mb-3">
+                            <label for="clientLoginEmail" class="form-label">@(isNlClientModal ? "E-mail" : "Email") :</label>
+                            <input type="email" id="clientLoginEmail" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="clientLoginPassword" class="form-label">@(isNlClientModal ? "Wachtwoord" : "Mot de passe") :</label>
+                            <input type="password" id="clientLoginPassword" name="password" class="form-control" required>
+                            <div class="form-text">@clientFormHelper</div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">@(isNlClientModal ? "Inloggen" : "Se connecter")</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@(isNlClientModal ? "Annuleren" : "Annuler")</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL ADMIN -->

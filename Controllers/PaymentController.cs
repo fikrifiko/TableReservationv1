@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Stripe;
 using Stripe.Checkout;
+using System.Globalization;
+using Table_Reservation.Models;
 using Table_Reservation.Services;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Table_Reservation.Controllers
 {
@@ -14,15 +18,22 @@ namespace Table_Reservation.Controllers
         private readonly string _webhookSecret;
         private readonly AppDbContext _context;
         private readonly IEmailService _emailService;
-        private readonly SmsService _smsService;  
+        private readonly SmsService _smsService;
+        private readonly ClientAccountService _clientAccountService;
 
-        public PaymentController(IConfiguration configuration, AppDbContext context, IEmailService emailService, SmsService smsService)
+        public PaymentController(
+            IConfiguration configuration,
+            AppDbContext context,
+            IEmailService emailService,
+            SmsService smsService,
+            ClientAccountService clientAccountService)
         {
             _stripeSecretKey = configuration["Stripe:SecretKey"];
             _webhookSecret = configuration["Stripe:WebhookSecret"];
             _context = context;
             _emailService = emailService;
-            _smsService = smsService;  
+            _smsService = smsService;
+            _clientAccountService = clientAccountService;
 
             if (string.IsNullOrEmpty(_stripeSecretKey))
             {
@@ -84,7 +95,7 @@ namespace Table_Reservation.Controllers
         }
 
         [HttpPost("webhook")]
-        public IActionResult StripeWebhook()
+        public async Task<IActionResult> StripeWebhook()
         {
             var json = new StreamReader(HttpContext.Request.Body).ReadToEnd();
             try
@@ -105,22 +116,24 @@ namespace Table_Reservation.Controllers
                         return BadRequest();
                     }
 
-                    if (!_context.Reservations.Any(r => r.ClientEmail == session.Metadata["clientEmail"] && r.ReservationDate == DateTime.Parse(session.Metadata["Date"]).Date))
-                    {
-                        var reservation = new ReservationModel
-                        {
-                            TableId = int.Parse(session.Metadata["tableId"]),
-                            TableName = session.Metadata["TableName"],
-                            ClientName = session.Metadata["clientName"],
-                            ClientEmail = session.Metadata["clientEmail"],
-                            ClientPhone = session.Metadata["clientPhone"],
-                            ReservationDate = DateTime.Parse(session.Metadata["Date"]).Date,
-                            ReservationHoure = DateTime.Parse(session.Metadata["StartTime"]).Date.Add(DateTime.Parse(session.Metadata["StartTime"]).TimeOfDay),
-                            Amount = (int)session.AmountTotal / 100
-                        };
+                    var reservationDate = DateTime.Parse(session.Metadata["Date"], CultureInfo.InvariantCulture).Date;
+                    var reservationStart = ClientAccountService.CombineDateAndTime(reservationDate, session.Metadata["StartTime"]);
+                    var tableId = int.Parse(session.Metadata["tableId"], CultureInfo.InvariantCulture);
+                    var amountTotal = session.AmountTotal ?? 0;
 
+                    if (!await _clientAccountService.ReservationExistsAsync(tableId, session.Metadata["clientEmail"], reservationDate, reservationStart))
+                    {
+                        var reservation = await _clientAccountService.CreateReservationAsync(
+                            tableId,
+                            session.Metadata["TableName"],
+                            session.Metadata["clientName"],
+                            session.Metadata["clientEmail"],
+                            session.Metadata["clientPhone"],
+                            reservationDate,
+                            reservationStart,
+                            amountTotal);
                         _context.Reservations.Add(reservation);
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                     }
                 }
 
@@ -149,20 +162,22 @@ namespace Table_Reservation.Controllers
                 return BadRequest("Session Stripe invalide.");
             }
 
-            if (!_context.Reservations.Any(r => r.ClientEmail == session.Metadata["clientEmail"] && r.ReservationDate == DateTime.Parse(session.Metadata["Date"]).Date))
-            {
-                var reservation = new ReservationModel
-                {
-                    TableId = int.Parse(session.Metadata["tableId"]),
-                    TableName = session.Metadata["TableName"],
-                    ClientName = session.Metadata["clientName"],
-                    ClientEmail = session.Metadata["clientEmail"],
-                    ClientPhone = session.Metadata["clientPhone"],
-                    ReservationDate = DateTime.Parse(session.Metadata["Date"]).Date,
-                    ReservationHoure = DateTime.Parse(session.Metadata["StartTime"]).Date.Add(DateTime.Parse(session.Metadata["StartTime"]).TimeOfDay),
-                    Amount = (int)session.AmountTotal / 100
-                };
+            var reservationDate = DateTime.Parse(session.Metadata["Date"], CultureInfo.InvariantCulture).Date;
+            var reservationStart = ClientAccountService.CombineDateAndTime(reservationDate, session.Metadata["StartTime"]);
+            var tableId = int.Parse(session.Metadata["tableId"], CultureInfo.InvariantCulture);
+            var amountTotal = session.AmountTotal ?? 0;
 
+            if (!await _clientAccountService.ReservationExistsAsync(tableId, session.Metadata["clientEmail"], reservationDate, reservationStart))
+            {
+                var reservation = await _clientAccountService.CreateReservationAsync(
+                    tableId,
+                    session.Metadata["TableName"],
+                    session.Metadata["clientName"],
+                    session.Metadata["clientEmail"],
+                    session.Metadata["clientPhone"],
+                    reservationDate,
+                    reservationStart,
+                    amountTotal);
                 _context.Reservations.Add(reservation);
                 await _context.SaveChangesAsync();
 
@@ -192,3 +207,4 @@ namespace Table_Reservation.Controllers
         public string ClientPhone { get; set; }
     }
 }
+

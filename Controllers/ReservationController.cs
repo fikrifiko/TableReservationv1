@@ -1,22 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using Table_Reservation.Data; // Pour accéder au DbContext
-using Table_Reservation.Models;
-using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using Stripe.Checkout;
-using System;
+using System.Globalization;
+using Table_Reservation.Data; // Pour accéder au DbContext
+using Table_Reservation.Models;
+using Table_Reservation.Services;
 
 public class ReservationController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly ClientAccountService _clientAccountService;
 
-    public ReservationController(AppDbContext context)
+    public ReservationController(AppDbContext context, ClientAccountService clientAccountService)
     {
         _context = context;
+        _clientAccountService = clientAccountService;
     }
 
-    public IActionResult Success(string sessionId)
+    public async Task<IActionResult> Success(string sessionId)
     {
         try
         {
@@ -38,36 +39,43 @@ public class ReservationController : Controller
             }
 
             // Initialiser la réservation avec les métadonnées Stripe
-            var reservation = new ReservationModel
+            var reservationDate = DateTime.Parse(session.Metadata["Date"], CultureInfo.InvariantCulture).Date;
+            var reservationStart = ClientAccountService.CombineDateAndTime(reservationDate, session.Metadata["StartTime"]);
+            var tableId = int.Parse(session.Metadata["tableId"], CultureInfo.InvariantCulture);
+            var amountTotal = session.AmountTotal ?? 0;
+
+            if (!await _clientAccountService.ReservationExistsAsync(tableId, session.Metadata["clientEmail"], reservationDate, reservationStart))
             {
-                TableId = int.Parse(session.Metadata["tableId"]),
-                TableName = session.Metadata["TableName"],
+                var reservation = await _clientAccountService.CreateReservationAsync(
+                    tableId,
+                    session.Metadata["TableName"],
+                    session.Metadata["clientName"],
+                    session.Metadata["clientEmail"],
+                    session.Metadata["clientPhone"],
+                    reservationDate,
+                    reservationStart,
+                    amountTotal);
 
-                ClientName = session.Metadata["clientName"],
-                ClientEmail = session.Metadata["clientEmail"],
-                ClientPhone = session.Metadata["clientPhone"],
-                ReservationDate = DateTime.Now, // Ajustez si nécessaire
-                ReservationHoure = DateTime.Now, // Ajustez si nécessaire
-                Amount = (int)(session.AmountTotal / 100) // Stripe utilise des centimes
-            };
+                // Afficher les données dans la console pour vérification
+                Console.WriteLine("Début de l'enregistrement dans la base de données...");
+                Console.WriteLine($"TableId : {reservation.TableId}");
+                Console.WriteLine($"ClientName : {reservation.ClientName}");
+                Console.WriteLine($"ClientEmail : {reservation.ClientEmail}");
+                Console.WriteLine($"ReservationDate : {reservation.ReservationDate}");
+                Console.WriteLine($"ReservationHoure : {reservation.ReservationHoure}");
+                Console.WriteLine($"Amount : {reservation.Amount}");
 
-            // Afficher les données dans la console pour vérification
-            Console.WriteLine("Début de l'enregistrement dans la base de données...");
-            Console.WriteLine($"TableId : {reservation.TableId}");
-            Console.WriteLine($"ClientName : {reservation.ClientName}");
-            Console.WriteLine($"ClientEmail : {reservation.ClientEmail}");
-            Console.WriteLine($"ReservationDate : {reservation.ReservationDate}");
-            Console.WriteLine($"ReservationHoure : {reservation.ReservationHoure}");
-            Console.WriteLine($"Amount : {reservation.Amount}");
+                // Ajouter la réservation à la base de données
+                _context.Reservations.Add(reservation);
+                await _context.SaveChangesAsync();
 
-            // Ajouter la réservation à la base de données
-            _context.Reservations.Add(reservation);
-            _context.SaveChanges();
+                Console.WriteLine("Enregistrement réussi dans la base de données !");
 
-            Console.WriteLine("Enregistrement réussi dans la base de données !");
+                // Retourner la vue avec la réservation
+                return View("~/Views/Payment/Success.cshtml", reservation);
+            }
 
-            // Retourner la vue avec la réservation
-            return View("~/Views/Payment/Success.cshtml", reservation);
+            return Redirect("/reservation-success");
         }
         catch (Exception ex)
         {
@@ -99,7 +107,7 @@ public class ReservationController : Controller
 
             // Récupérer toutes les réservations pour la date donnée
             var reservations = _context.Reservations
-                .Where(r => r.ReservationDate == reservationDate)
+                .Where(r => r.ReservationDate == reservationDate && !r.IsCancelled)
                 .ToList(); // Récupération des données côté mémoire
 
             // Filtrer en mémoire pour gérer la logique de TimeSpan // bug 2h apres et une 1 avant pour bloquer tables

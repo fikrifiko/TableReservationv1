@@ -45,12 +45,28 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ReservationModel>()
             .Property(r => r.ClientPhone)
             .HasMaxLength(50); // Définit une longueur maximale pour ClientPhone
-
         modelBuilder.Entity<ClientModel>()
-            .Property(C => C.Id)
+            .Property(c => c.Id)
             .ValueGeneratedOnAdd();
 
+        modelBuilder.Entity<ClientModel>()
+            .HasIndex(c => c.ClientEmail)
+            .IsUnique();
 
+        modelBuilder.Entity<ClientModel>()
+            .Property(c => c.PasswordHash)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        modelBuilder.Entity<ReservationModel>()
+            .Property(r => r.IsCancelled)
+            .HasDefaultValue(false);
+
+        modelBuilder.Entity<ReservationModel>()
+            .HasOne(r => r.Client)
+            .WithMany(c => c.Reservations)
+            .HasForeignKey(r => r.ClientId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Configuration de la table Administrators
         modelBuilder.Entity<AdministratorModel>().HasKey(a => a.Id);

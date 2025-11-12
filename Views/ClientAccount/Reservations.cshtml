@@ -1,0 +1,126 @@
+@model Table_Reservation.Models.ViewModels.ClientDashboardViewModel
+@{
+    ViewData["Title"] = "Mes réservations";
+}
+
+@{
+    var isNl = (System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr") == "nl";
+    var greeting = isNl ? "Hallo" : "Bonjour";
+    var pageTitle = isNl ? "Mijn reserveringen" : "Mes réservations";
+    var noReservationText = isNl ? "Je hebt nog geen reservering." : "Vous n'avez pas encore de réservation.";
+    var tableHeaderTable = isNl ? "Tafel" : "Table";
+    var tableHeaderDate = isNl ? "Datum" : "Date";
+    var tableHeaderTime = isNl ? "Uur" : "Heure";
+    var tableHeaderAmount = isNl ? "Bedrag" : "Montant";
+    var tableHeaderStatus = isNl ? "Status" : "Statut";
+    var tableHeaderActions = isNl ? "Acties" : "Actions";
+    var statusCancelled = isNl ? "Geannuleerd" : "Annulée";
+    var statusConfirmed = isNl ? "Bevestigd" : "Confirmée";
+    var cancelLabel = isNl ? "Annuleren" : "Annuler";
+    var cancelNotAllowed = isNl ? "Annuleren niet mogelijk" : "Annulation impossible";
+    var deleteCardTitle = isNl ? "Mijn profiel verwijderen" : "Supprimer mon profil";
+    var deleteCardText = isNl ? "Deze actie verwijdert ook al je bijbehorende reserveringen." : "Cette action supprimera également toutes vos réservations associées.";
+    var deleteButtonLabel = isNl ? "Mijn profiel verwijderen" : "Supprimer mon profil";
+    var deleteConfirmText = isNl ? "Ben je zeker dat je je profiel wil verwijderen?" : "Êtes-vous sûr de vouloir supprimer votre profil ?";
+    var amountSuffix = isNl ? "€" : "€";
+    var deleteConfirmTextEscaped = deleteConfirmText.Replace("'", "\\'");
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>@pageTitle</h1>
+        <div class="text-end">
+            <div class="fw-semibold">@($"{greeting} {Model.ClientName}")</div>
+            <span class="text-muted">@Model.ClientEmail</span>
+        </div>
+    </div>
+
+    @if (TempData["ClientDashboardSuccess"] is string successMessage)
+    {
+        <div class="alert alert-success">@successMessage</div>
+    }
+    @if (TempData["ClientDashboardError"] is string errorMessage)
+    {
+        <div class="alert alert-danger">@errorMessage</div>
+    }
+    @if (TempData["ClientDashboardInfo"] is string infoMessage)
+    {
+        <div class="alert alert-info">@infoMessage</div>
+    }
+
+    @if (!Model.Reservations.Any())
+    {
+        <div class="alert alert-secondary">@noReservationText</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>@tableHeaderTable</th>
+                        <th>@tableHeaderDate</th>
+                        <th>@tableHeaderTime</th>
+                        <th>@tableHeaderAmount</th>
+                        <th>@tableHeaderStatus</th>
+                        <th class="text-end">@tableHeaderActions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var reservation in Model.Reservations)
+                {
+                    var localDate = reservation.ReservationDate.ToString("dd/MM/yyyy");
+                    var localTime = reservation.ReservationStart.ToString("HH:mm");
+                    <tr>
+                        <td>@reservation.TableName</td>
+                        <td>@localDate</td>
+                        <td>@localTime</td>
+                        <td>@($"{reservation.Amount} {amountSuffix}")</td>
+                        <td>
+                            @if (reservation.IsCancelled)
+                            {
+                                <span class="badge bg-secondary">@statusCancelled</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">@statusConfirmed</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @if (reservation.CanCancel && !reservation.IsCancelled)
+                            {
+                                <form asp-action="CancelReservation"
+                                      asp-controller="ClientAccount"
+                                      method="post"
+                                      class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@reservation.Id" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        @cancelLabel
+                                    </button>
+                                </form>
+                            }
+                            else if (!reservation.IsCancelled)
+                            {
+                                <span class="text-muted">@cancelNotAllowed</span>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="card mt-4 border-danger">
+        <div class="card-body">
+            <h5 class="card-title text-danger">@deleteCardTitle</h5>
+            <p class="card-text">@deleteCardText</p>
+            <form asp-action="DeleteProfile" asp-controller="ClientAccount" method="post" onsubmit="return confirm('@deleteConfirmTextEscaped');">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger">@deleteButtonLabel</button>
+            </form>
+        </div>
+    </div>
+</div>
+

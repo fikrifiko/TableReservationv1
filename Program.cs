@@ -55,6 +55,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Injection des services
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<SmsService>();
+builder.Services.AddScoped<ClientAccountService>();
 
 // Configuration de la lecture des paramètres
 var configuration = new ConfigurationBuilder()
