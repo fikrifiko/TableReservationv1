@@ -5383,7 +5383,8 @@
       super(element); // private
 
       this._isEnabled = true;
-      this._timeout = 0;
+        this._
+            = 0;
       this._hoverState = '';
       this._activeTrigger = {};
       this._popper = null; // Protected

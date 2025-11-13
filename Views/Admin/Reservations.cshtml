@@ -1,0 +1,307 @@
+@using System.Globalization
+@model Table_Reservation.Models.ViewModels.AdminReservationCalendarViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var culture = Model.IsDutch ? new CultureInfo("nl-BE") : new CultureInfo("fr-FR");
+    var monthLabel = CultureInfo.CurrentUICulture.TextInfo.ToTitleCase(Model.MonthReference.ToString("Y", culture));
+    var dayNames = Model.IsDutch
+        ? new[] { "Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo" }
+        : new[] { "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim" };
+    var prevLabel = Model.IsDutch ? "Vorige maand" : "Mois précédent";
+    var nextLabel = Model.IsDutch ? "Volgende maand" : "Mois suivant";
+    var todayLabel = Model.IsDutch ? "Vandaag" : "Aujourd'hui";
+    var noReservationLabel = Model.IsDutch ? "Geen reserveringen" : "Aucune réservation";
+    var tableLabel = Model.IsDutch ? "Tafel" : "Table";
+    var clientLabel = Model.IsDutch ? "Klant" : "Client";
+    var emailLabel = Model.IsDutch ? "E-mail" : "Email";
+    var phoneLabel = Model.IsDutch ? "Telefoon" : "Téléphone";
+    var amountLabel = Model.IsDutch ? "Bedrag" : "Montant";
+    var cancelledLegendLabel = Model.IsDutch ? "Geannuleerde reserveringen" : "Réservations annulées";
+    var statusCancelledLabel = Model.IsDutch ? "Geannuleerd" : "Annulée";
+    var statusConfirmedLabel = Model.IsDutch ? "Bevestigd" : "Confirmée";
+    var cancelledOnLabel = Model.IsDutch ? "Geannuleerd op" : "Annulée le";
+    var deletedLegendLabel = Model.IsDutch ? "Profiel verwijderd" : "Profil supprimé";
+    var deletedBadgeLabel = Model.IsDutch ? "Profiel verwijderd" : "Profil supprimé";
+}
+
+<style>
+    .calendar-wrapper {
+        background-color: #121417;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+        color: #f5f7fa;
+        overflow-x: auto;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .calendar-header h1 {
+        font-size: 1.75rem;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .calendar-nav .btn {
+        border-radius: 999px;
+        border-width: 0;
+        font-weight: 600;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .calendar-day {
+        background-color: rgba(255, 255, 255, 0.04);
+        border-radius: 14px;
+        padding: 12px;
+        min-height: 160px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .calendar-day::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .calendar-day::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 999px;
+    }
+
+    .calendar-day::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 999px;
+    }
+
+    .calendar-day:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px rgba(15, 18, 25, 0.35);
+    }
+
+    .calendar-day.outside {
+        opacity: 0.35;
+    }
+
+    .calendar-day.today {
+        border: 1px solid #28a745;
+        box-shadow: 0 0 0 1px rgba(40, 167, 69, 0.55);
+    }
+
+    .day-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+    }
+
+    .day-label .number {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .reservation-card {
+        background: rgba(40, 167, 69, 0.12);
+        border: 1px solid rgba(40, 167, 69, 0.35);
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 0.9rem;
+        color: #d1f2e5;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .reservation-card strong {
+        display: block;
+        font-size: 0.95rem;
+        color: #ffffff;
+    }
+
+    .reservation-meta {
+        margin: 0;
+        font-size: 0.85rem;
+        line-height: 1.35;
+    }
+
+    .calendar-legend {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        margin-top: 12px;
+        font-size: 0.9rem;
+        color: #a5acb8;
+    }
+
+    .legend-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    }
+
+    .legend-upcoming {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.8), rgba(72, 201, 176, 0.8));
+    }
+
+    .legend-today {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.8), rgba(255, 235, 59, 0.8));
+    }
+
+    .legend-cancelled {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.85), rgba(255, 99, 132, 0.85));
+    }
+
+    .legend-deleted {
+        background: linear-gradient(135deg, rgba(255, 165, 0, 0.8), rgba(255, 193, 7, 0.85));
+    }
+
+    .reservation-card.deleted-client {
+        background: rgba(255, 193, 7, 0.15);
+        border: 1px solid rgba(255, 193, 7, 0.6);
+        color: #fff3cd;
+    }
+
+    .reservation-card.deleted-client strong {
+        color: #fff;
+    }
+
+    .reservation-card.deleted-client .reservation-meta {
+        color: #fff3cd;
+    }
+
+    .reservation-card.cancelled {
+        background: rgba(220, 53, 69, 0.15);
+        border: 1px solid rgba(220, 53, 69, 0.5);
+        color: #f8d7da;
+    }
+
+    .reservation-card.cancelled strong {
+        color: #ffe6e9;
+    }
+
+    .reservation-card.cancelled .reservation-meta {
+        color: #fce3e6;
+    }
+
+    @@media (max-width: 992px) {
+        .calendar-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .calendar-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="calendar-wrapper">
+    <div class="calendar-header">
+        <div>
+            <h1>@monthLabel</h1>
+            <div class="calendar-legend">
+                <span><span class="legend-dot legend-upcoming"></span>@(Model.IsDutch ? "Toekomstige reserveringen" : "Réservations à venir")</span>
+                <span><span class="legend-dot legend-today"></span>@(Model.IsDutch ? "Vandaag" : "Aujourd'hui")</span>
+                <span><span class="legend-dot legend-cancelled"></span>@cancelledLegendLabel</span>
+                <span><span class="legend-dot legend-deleted"></span>@deletedLegendLabel</span>
+            </div>
+        </div>
+        <div class="calendar-nav d-flex gap-2">
+            <a class="btn btn-outline-light btn-sm" href="@Url.Action("Reservations", new { offset = Model.MonthOffset - 1 })">@prevLabel</a>
+            <a class="btn btn-outline-light btn-sm" href="@Url.Action("Reservations", new { offset = 0 })">@todayLabel</a>
+            <a class="btn btn-outline-light btn-sm" href="@Url.Action("Reservations", new { offset = Model.MonthOffset + 1 })">@nextLabel</a>
+        </div>
+    </div>
+
+    <div class="calendar-grid mt-4">
+        @for (var i = 0; i < dayNames.Length; i++)
+        {
+            <div class="text-uppercase fw-semibold text-muted">@dayNames[i]</div>
+        }
+
+        @foreach (var week in Model.Weeks)
+        {
+            foreach (var day in week)
+            {
+                var dayClasses = "calendar-day";
+                if (!day.IsInCurrentMonth) { dayClasses += " outside"; }
+                if (day.IsToday) { dayClasses += " today"; }
+
+                <div class="@dayClasses">
+                    <div class="day-label">
+                        <span class="number">@day.Date.Day</span>
+                        <span class="text-muted">@day.Date.ToString("MMM", culture)</span>
+                    </div>
+
+                    @if (day.Reservations.Count == 0)
+                    {
+                        <div class="text-muted small">@noReservationLabel</div>
+                    }
+                    else
+                    {
+                        foreach (var reservation in day.Reservations)
+                        {
+                            var cardClasses = "reservation-card";
+                            if (reservation.IsCancelled)
+                            {
+                                cardClasses += " cancelled";
+                            }
+                            else if (reservation.ClientProfileDeleted)
+                            {
+                                cardClasses += " deleted-client";
+                            }
+
+                            <div class="@cardClasses">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong>@reservation.Start.ToString("HH:mm") - @reservation.TableName</strong>
+                                    @if (reservation.IsCancelled)
+                                    {
+                                        <span class="badge bg-danger">@statusCancelledLabel</span>
+                                    }
+                                    else if (reservation.ClientProfileDeleted)
+                                    {
+                                        <span class="badge bg-warning text-dark">@deletedBadgeLabel</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">@statusConfirmedLabel</span>
+                                    }
+                                </div>
+                                <p class="reservation-meta mb-1">
+                                    <span>@clientLabel&nbsp;: @reservation.ClientName</span><br />
+                                    <span>@emailLabel&nbsp;: @reservation.ClientEmail</span><br />
+                                    <span>@phoneLabel&nbsp;: @reservation.ClientPhone</span><br />
+                                    <span>@amountLabel&nbsp;: @reservation.Amount&nbsp;€</span>
+                                </p>
+                                @if (reservation.IsCancelled && reservation.CancelledAt.HasValue)
+                                {
+                                    <p class="reservation-meta mb-0">
+                                        <span>@cancelledOnLabel&nbsp;: @reservation.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm", culture)</span>
+                                    </p>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>
+

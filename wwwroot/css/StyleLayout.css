@@ -25,6 +25,22 @@ header {
     background-color: #000 !important;
 }
 
+.admin-layout {
+    padding-top: 160px;
+}
+
+@media (max-width: 992px) {
+    .admin-layout {
+        padding-top: 180px;
+    }
+}
+
+@media (max-width: 576px) {
+    .admin-layout {
+        padding-top: 200px;
+    }
+}
+
 .navbar-brand {
     color: white !important;
 }

@@ -17,11 +17,12 @@
     <!-- Fichier CSS du layout (séparé du reste) -->
     <link rel="stylesheet" href="~/css/StyleLayout.css">
 </head>
-<body class="layout-global">
+<body class="layout-global admin-layout">
 
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="/AdminView/Dashboard">Dashboard</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -31,8 +32,8 @@
                         @{
                             var isNlAdmin = (System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr") == "nl";
                         }
-                        <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Onze reserveringen" : "Nos Réservations")</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Onze klanten" : "Nos clients")</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/AdminView/Reservations">@(isNlAdmin ? "Onze reserveringen" : "Nos Réservations")</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/AdminView/Clients">@(isNlAdmin ? "Onze klanten" : "Nos clients")</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Advertentie" : "Pub")</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Optie" : "Option")</a></li>
                     </ul>

@@ -1,62 +1,52 @@
 ﻿@{
     ViewData["Title"] = "Réservation Client";
 }
-<head>
-    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/css/StylePageClient.css">
-    
-</head>
+<link rel="stylesheet" href="~/css/StylePageClient.css" />
 
+<!-- Overlay pour l'arrière-plan -->
+<div id="reservationOverlay" class="reservation-overlay"></div>
 
-<body>
+<div class="client-reservation-container container text-center mt-5 pt-5">
+    <h1>Réservez votre table</h1>
 
-   
-
-    <!-- Overlay pour l'arrière-plan -->
-    <div id="reservationOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
-
-    <div class="container text-center mt-4">
-        <h1>Réservez votre table</h1>
-
-        <div class="mt-3">
-            <label for="selectDate" class="form-label">Choisissez une date :</label>
-            <input type="date" id="selectDate" class="form-control" style="max-width: 300px; margin: 0 auto;" min="">
-            <label for="startTime">Heure de début :</label> <br />
-            <select id="startTime" sele style="max-width: 300px; margin: 0 auto;" min="">
-                <option value="00:00" selected>00:00</option>
-            </select>
-        </div>
-
-        <div id="loadingMessage" class="text-muted mt-2" style="display: none;">Chargement de la salle...</div>
-        <canvas id="roomCanvas" class="mt-4" style="border:1px solid black;"></canvas>
+    <div class="mt-3">
+        <label for="selectDate" class="form-label">Choisissez une date :</label>
+        <input type="date" id="selectDate" class="form-control client-date-input" style="max-width: 300px; margin: 0 auto;">
+        <label for="startTime" class="form-label mt-3">Heure de début :</label>
+        <select id="startTime" class="form-select client-time-select" style="max-width: 300px; margin: 0 auto;">
+            <option value="00:00" selected>00:00</option>
+        </select>
     </div>
 
-    <div id="reservationModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="reservationCloseBtn">&times;</span>
-            <h2>Réservez la  <span hidden id="tableId"> </span><strong id="TableNameModal"></strong></h2>
-            <p>Date sélectionnée : <strong id="displayReservationDate"></strong></p>
-            <p>Heure sélectionnée : <strong id="displayReservationHoure"></strong></p>
+    <div id="loadingMessage" class="text-muted mt-2" style="display: none;">Chargement de la salle...</div>
+    <canvas id="roomCanvas" class="mt-4" style="border:1px solid black;"></canvas>
+</div>
 
-           
-            <div class="mb-3">
-                <label for="clientName" class="form-label">Nom :</label>
-                <input type="text" id="clientName" class="form-control" placeholder="Entrez votre nom" required>
-            </div>
-            <div class="mb-3">
-                <label for="clientEmail" class="form-label">Email :</label>
-                <input type="email" id="clientEmail" class="form-control" placeholder="Entrez votre email" required>
-            </div>
-            <div class="mb-3">
-                <label for="clientPhone" class="form-label">Téléphone :</label>
-                <input type="tel" id="clientPhone" class="form-control" placeholder="Entrez votre numéro de téléphone" required>
-            </div>
-            <br>
-            <button class="btn btn-primary" id="reserveBtn">Réserver</button>
-            <button class="btn btn-secondary" id="cancelReserveBtn">Annuler</button>
+<div id="reservationModal" class="modal custom-reservation-modal" role="dialog" aria-modal="true" aria-labelledby="reservationModalTitle">
+    <div class="modal-content">
+        <button type="button" class="close" id="reservationCloseBtn" aria-label="Fermer">&times;</button>
+        <h2 id="reservationModalTitle">Réservez la <span hidden id="tableId"></span><strong id="TableNameModal"></strong></h2>
+        <p>Date sélectionnée : <strong id="displayReservationDate"></strong></p>
+        <p>Heure sélectionnée : <strong id="displayReservationHoure"></strong></p>
+
+        <div class="mb-3">
+            <label for="clientName" class="form-label">Nom :</label>
+            <input type="text" id="clientName" class="form-control" placeholder="Entrez votre nom" required>
+        </div>
+        <div class="mb-3">
+            <label for="clientEmail" class="form-label">Email :</label>
+            <input type="email" id="clientEmail" class="form-control" placeholder="Entrez votre email" required>
+        </div>
+        <div class="mb-3">
+            <label for="clientPhone" class="form-label">Téléphone :</label>
+            <input type="tel" id="clientPhone" class="form-control" placeholder="Entrez votre numéro de téléphone" required>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-3">
+            <button type="button" class="btn btn-secondary" id="cancelReserveBtn">Annuler</button>
+            <button type="button" class="btn btn-primary" id="reserveBtn">Réserver</button>
         </div>
     </div>
+</div>
 
-    <!-- Lien vers le fichier JavaScript -->
-    <script src="~/js/ScriptsPageClient.js" defer></script>
-</body>
+<script src="~/js/ScriptsPageClient.js" defer></script>

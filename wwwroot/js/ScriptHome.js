@@ -154,6 +154,22 @@ if (clientLogoutBtn) {
     });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const deleteProfileForm = document.getElementById("deleteProfileForm");
+    if (!deleteProfileForm) {
+        return;
+    }
 
-
-
+    deleteProfileForm.addEventListener("submit", (event) => {
+        if (!deleteProfileForm) {
+            return;
+        }
+        const confirmText = deleteProfileForm.getAttribute("data-confirm-text") || "";
+        if (!confirmText) {
+            return;
+        }
+        if (!window.confirm(confirmText)) {
+            event.preventDefault();
+        }
+    });
+});

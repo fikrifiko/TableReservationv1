@@ -3,6 +3,8 @@ const ctx = canvas.getContext("2d");
 let tables = [];
 let tablesReserved = [];
 let selectedTableId = null;
+let selectedTableName = null;
+let loggedInClient = null;
 
 // loading message
 function setLoadingMessage(visible) {
@@ -122,7 +124,7 @@ function checkReservation(date, time) {
 
 
 // init + date/time handlers
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const selectDateInput = document.getElementById("selectDate");
     const startTimeSelect = document.getElementById("startTime");
 
@@ -183,6 +185,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (reserveBtn) reserveBtn.addEventListener("click", submitReservation);
     const overlay = document.getElementById("reservationOverlay");
     if (overlay) overlay.addEventListener("click", closeReservationModal);
+
+    await loadLoggedInClient();
 });
 
 // populate time dropdown
@@ -248,6 +252,12 @@ function openReservationModal(table) {
     document.getElementById("displayReservationHoure").textContent = startTime;
     document.getElementById("TableNameModal").textContent = selectedTableName;
 
+    if (loggedInClient) {
+        prefillClientFields();
+    } else {
+        loadLoggedInClient();
+    }
+
 
     
     // show modal
@@ -261,6 +271,40 @@ function closeReservationModal() {
     document.getElementById("reservationModal").style.display = "none";
     const overlay = document.getElementById("reservationOverlay");
     if (overlay) overlay.style.display = "none";
+}
+
+async function loadLoggedInClient() {
+    try {
+        const response = await fetch("/api/client/session", { headers: { "Accept": "application/json" } });
+        if (!response.ok) {
+            throw new Error("unauthorized");
+        }
+        const data = await response.json();
+        loggedInClient = data;
+        prefillClientFields();
+    } catch (error) {
+        loggedInClient = null;
+    }
+}
+
+function prefillClientFields() {
+    if (!loggedInClient) {
+        return;
+    }
+
+    const nameInput = document.getElementById("clientName");
+    const emailInput = document.getElementById("clientEmail");
+    const phoneInput = document.getElementById("clientPhone");
+
+    if (nameInput) {
+        nameInput.value = loggedInClient.name || "";
+    }
+    if (emailInput) {
+        emailInput.value = loggedInClient.email || "";
+    }
+    if (phoneInput) {
+        phoneInput.value = loggedInClient.phone || "";
+    }
 }
 
 // submit reservation

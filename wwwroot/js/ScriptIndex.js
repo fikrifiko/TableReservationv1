@@ -186,15 +186,36 @@
     });
 
     saveTablesButton.addEventListener("click", () => {
-        const dataToSend = tables.map(({ x, y, width, height, seats, rotated }) => ({
-            x: Math.round(x),
-            y: Math.round(y),
-            width: Math.round(width),
-            height: Math.round(height),
-            seats: seats,
-            rotated: rotated,
-            name: isNl ? "Tafel" : "Table"
-        }));
+        const dataToSend = tables.map((table, index) => {
+            const resolveNumber = (primary, secondary, defaultValue = 0) => {
+                const value = Number.isFinite(primary) ? primary : Number.isFinite(secondary) ? secondary : defaultValue;
+                return Math.round(value);
+            };
+
+            const resolveBoolean = (primary, secondary) => {
+                if (typeof primary === "boolean") return primary;
+                if (typeof secondary === "boolean") return secondary;
+                return false;
+            };
+
+            const rawName = typeof table.name === "string" ? table.name
+                : typeof table.Name === "string" ? table.Name
+                : "";
+            const normalizedName = rawName.trim().length > 0
+                ? rawName.trim()
+                : `${isNl ? "Tafel" : "Table"} ${index + 1}`;
+
+            return {
+                x: resolveNumber(table.x, table.X),
+                y: resolveNumber(table.y, table.Y),
+                width: resolveNumber(table.width, table.Width),
+                height: resolveNumber(table.height, table.Height),
+                seats: Number.isFinite(table.seats) ? table.seats : Number.isFinite(table.Seats) ? table.Seats : 2,
+                rotated: resolveBoolean(table.rotated, table.Rotated),
+                reserved: resolveBoolean(table.reserved, table.Reserved),
+                name: normalizedName
+            };
+        });
 
         fetch("/api/tables", {
             method: "POST",

@@ -20,6 +20,44 @@ namespace Table_Reservation.Controllers
             _context = context;
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] ClientRegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+            var normalizedPhone = request.Phone.Trim();
+            var trimmedName = request.Name.Trim();
+
+            if (await _context.ClientModels.AnyAsync(c => c.ClientEmail == normalizedEmail))
+            {
+                return Conflict(new { message = Translate("Un compte existe déjà pour cet email.", "Er bestaat al een account voor dit e-mailadres.") });
+            }
+
+            var client = new ClientModel
+            {
+                ClientName = trimmedName,
+                ClientEmail = normalizedEmail,
+                ClientPhone = normalizedPhone,
+                PasswordHash = BCryptNet.HashPassword(normalizedPhone),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.ClientModels.Add(client);
+            await _context.SaveChangesAsync();
+
+            return Created($"/api/client/{client.Id}", new
+            {
+                client.Id,
+                Name = client.ClientName,
+                Email = client.ClientEmail,
+                Phone = client.ClientPhone
+            });
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] ClientLoginRequest request)
         {
@@ -92,11 +130,22 @@ namespace Table_Reservation.Controllers
                 return Unauthorized(new { message = Translate("Utilisateur non connecté.", "Gebruiker niet aangemeld.") });
             }
 
+            var client = _context.ClientModels
+                .AsNoTracking()
+                .SingleOrDefault(c => c.Id == clientId.Value);
+
+            if (client == null)
+            {
+                HttpContext.Session.Clear();
+                return Unauthorized(new { message = Translate("Utilisateur non connecté.", "Gebruiker niet aangemeld.") });
+            }
+
             return Ok(new
             {
-                id = clientId.Value,
-                name = HttpContext.Session.GetString("ClientName") ?? string.Empty,
-                email = HttpContext.Session.GetString("ClientEmail") ?? string.Empty
+                id = client.Id,
+                name = client.ClientName,
+                email = client.ClientEmail,
+                phone = client.ClientPhone
             });
         }
 

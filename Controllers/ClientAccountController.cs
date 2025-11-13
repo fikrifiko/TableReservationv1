@@ -5,16 +5,19 @@ using System;
 using System.Globalization;
 using Table_Reservation.Data;
 using Table_Reservation.Models.ViewModels;
+using Table_Reservation.Services;
 
 namespace Table_Reservation.Controllers
 {
     public class ClientAccountController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IEmailService _emailService;
 
-        public ClientAccountController(AppDbContext context)
+        public ClientAccountController(AppDbContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -107,6 +110,18 @@ namespace Table_Reservation.Controllers
             reservation.CancelledAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
+            try
+            {
+                await _emailService.SendReservationCancellationEmailAsync(
+                    reservation.ClientEmail,
+                    reservation,
+                    IsDutchCulture());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de l'envoi de l'email d'annulation : {ex.Message}");
+            }
+
             TempData["ClientDashboardSuccess"] = Translate("Votre réservation a été annulée.", "Je reservering werd geannuleerd.");
             return RedirectToAction(nameof(Reservations));
         }
@@ -131,11 +146,16 @@ namespace Table_Reservation.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            foreach (var reservation in client.Reservations)
+            {
+                reservation.ClientId = null;
+                reservation.Client = null;
+            }
+
             _context.ClientModels.Remove(client);
             await _context.SaveChangesAsync();
 
             HttpContext.Session.Clear();
-            TempData["ClientDashboardSuccess"] = Translate("Votre profil a été supprimé.", "Je profiel werd verwijderd.");
             return RedirectToAction("Index", "Home");
         }
 

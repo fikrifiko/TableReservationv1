@@ -62,7 +62,7 @@ namespace Table_Reservation.Controllers
                                 {
                                     Name = $"Réservation {request.TableName}",
                                 },
-                                UnitAmount = 100, 
+                                UnitAmount = 15000, 
                             },
                             Quantity = 1,
                         },
