@@ -4,18 +4,17 @@
 }
 
 
-<section class="upload-section">
-    <div class="upload-container">
-        <h2>Menu du Restaurant</h2>
-        <p>Le menu est maintenant affiché directement sur le site.</p>
-        <div style="margin: 30px 0;">
-            <a href="/Home/Menu" class="btn btn-primary" style="padding: 15px 30px; font-size: 18px; text-decoration: none; display: inline-block; margin: 10px;">
-                Voir le Menu
-            </a>
-        </div>
-        <hr style="border-color: rgba(212, 175, 55, 0.3); margin: 30px 0;">
-        <h3 style="color: #d4af37; margin-bottom: 20px;">Ancien système d'upload PDF (désactivé)</h3>
-        <p style="color: #999; font-style: italic;">L'upload de PDFs n'est plus utilisé. Le menu est maintenant hard-codé avec des plats belges authentiques.</p>
+<div class="admin-content-wrapper">
+    <h1>Menu du Restaurant</h1>
+    <p class="admin-description">Le menu est maintenant affiché directement sur le site.</p>
+    <div style="margin: 2rem 0;">
+        <a href="/Home/Menu" class="btn btn-primary">
+            Voir le Menu
+        </a>
+    </div>
+    <hr class="admin-divider">
+    <h3>Ancien système d'upload PDF (désactivé)</h3>
+    <p class="admin-note">L'upload de PDFs n'est plus utilisé. Le menu est maintenant hard-codé avec des plats belges authentiques.</p>
 
         <div style="opacity: 0.5; pointer-events: none;">
             <form asp-controller="File" asp-action="UploadPdf" method="post" enctype="multipart/form-data" class="upload-form">
@@ -39,20 +38,6 @@
                 <button type="submit" class="upload-btn" disabled style="opacity: 0.5; cursor: not-allowed;">📤 Uploader les PDFs (Désactivé)</button>
             </form>
         </div>
-    </div>
-</section>
-<link rel="stylesheet" href="~/css/StyleUploadPdf.css" asp-append-version="true">
+</div>
 <script src="/js/ScriptDisplayBloc.js"></script> @* auth check *@
 <script src="/js/ScriptUpload.js"></script>
-<style>
-    /* Centrer la page */
-    body {
-        margin: 30px;
-        padding: 0;
-        display: none; /* Cache tout par défaut */
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background-color: #000 !important;
-        font-family: Arial, sans-serif;
-    }</style>

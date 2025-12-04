@@ -1,0 +1,355 @@
+/* Style élégant pour les pages Admin */
+.admin-layout {
+    background: transparent !important;
+    min-height: 100vh;
+    position: relative;
+}
+
+.admin-content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem 0;
+}
+
+.admin-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: #000000;
+    margin-bottom: 2rem;
+    letter-spacing: 3px;
+}
+
+.admin-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: #000000;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.admin-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #000000;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.admin-content p,
+.admin-content label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: #333333;
+    line-height: 1.8;
+}
+
+.admin-content .form-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: #333333;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+    font-weight: 400;
+}
+
+.admin-content .form-control,
+.admin-content .form-select {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    padding: 12px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    color: #000000;
+    transition: all 0.3s ease;
+}
+
+.admin-content .form-control:focus,
+.admin-content .form-select:focus {
+    border-color: #000000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    outline: none;
+    background-color: #ffffff;
+}
+
+.admin-content .btn {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 32px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    border: 1px solid;
+}
+
+.admin-content .btn-primary {
+    background: #000000;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+.admin-content .btn-primary:hover {
+    background: #333333;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-content .btn-secondary {
+    background: transparent;
+    color: #000000;
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.admin-content .btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: #000000;
+    transform: translateY(-2px);
+}
+
+.admin-content .btn-success {
+    background: #000000;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+.admin-content .btn-success:hover {
+    background: #333333;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-content .btn-danger {
+    background: #000000;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+.admin-content .btn-danger:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+}
+
+.admin-content .btn-warning {
+    background: transparent;
+    color: #000000;
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.admin-content .btn-warning:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: #000000;
+    transform: translateY(-2px);
+}
+
+.admin-content table {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.admin-content .table thead {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.admin-content .table thead th {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #000000;
+    letter-spacing: 1px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+.admin-content .table tbody td {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: #333333;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.admin-content .table tbody tr:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.admin-content .card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.admin-content .card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.admin-content .card-header {
+    background: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    color: #000000;
+    letter-spacing: 1px;
+}
+
+.admin-content .card-body {
+    font-family: 'Cormorant Garamond', serif;
+    color: #333333;
+}
+
+.admin-content .badge {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+.admin-content .alert {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    font-family: 'Cormorant Garamond', serif;
+    padding: 1rem 1.5rem;
+}
+
+.admin-content .alert-success {
+    background: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
+    color: #155724;
+}
+
+.admin-content .alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    border-color: rgba(220, 53, 69, 0.3);
+    color: #721c24;
+}
+
+.admin-content .alert-info {
+    background: rgba(23, 162, 184, 0.1);
+    border-color: rgba(23, 162, 184, 0.3);
+    color: #0c5460;
+}
+
+/* Canvas admin */
+.admin-content #roomCanvas {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.admin-content #roomCanvas:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Wrapper pour le contenu admin */
+.admin-content-wrapper {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 3rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.admin-description {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: #666666;
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+}
+
+.admin-divider {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 2.5rem 0;
+}
+
+.admin-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: #999999;
+    font-style: italic;
+    line-height: 1.8;
+}
+
+.canvas-wrapper-admin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin: 2rem 0;
+}
+
+/* Styles pour le calendrier admin */
+.calendar-legend {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    color: #666666;
+}
+
+.day-label {
+    font-family: 'Playfair Display', serif;
+}
+
+.day-label .number {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    color: #000000;
+    font-size: 1.1rem;
+}
+
+.day-label .text-muted {
+    font-family: 'Cormorant Garamond', serif;
+    color: #666666;
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-content {
+        padding: 1rem 0;
+    }
+
+    .admin-content h1 {
+        font-size: 2rem;
+    }
+
+    .admin-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .admin-content-wrapper {
+        padding: 2rem 1.5rem;
+    }
+
+    .canvas-wrapper-admin {
+        padding: 1rem;
+    }
+}
+

@@ -1,25 +1,4 @@
-﻿/* Centrer la page */
-body {
-    margin: 30px;
-    padding: 0;
-    display: flex; /* Cache tout par défaut */
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #000 !important;
-    font-family: Arial, sans-serif;
-}
-
-/* Conteneur principal */
-.container {
-    text-align: center;
-    max-width: 2000px;
-    width: 100%;
-    padding: 20px;
-    background-color: #f4f1ea; /* Blanc cassé élégant */
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
+﻿/* Les styles du body sont maintenant dans StyleAdmin.css pour cohérence */
 
 <style >
 .modal.fade.show {
@@ -29,20 +8,7 @@ body {
 }
 
 </style >
-/* Titre */
-h1 {
-    color: #0056b3; /* Bleu profond et classe */
-    margin-bottom: 20px;
-}
-
-/* Canvas centré */
-#roomCanvas {
-    margin: 20px auto;
-    display: block;
-    border: 1px solid #bbb; /* Gris clair pour éviter un contraste trop dur */
-    background-color: #dddddd; /* Gris doux et propre */
-    max-width: 100%;
-}
+/* Les styles sont maintenant dans StyleAdmin.css pour cohérence */
 
 /* Contrôles sous le canvas */
 .controls {

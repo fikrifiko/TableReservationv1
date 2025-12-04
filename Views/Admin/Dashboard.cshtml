@@ -4,13 +4,8 @@
     ViewData["Title"] = isNl ? "Tafelindeling" : "Disposition des Tables";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-<head>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/StylePageIndexAdmin.css">
-</head>
-
-<div class="container">
-    <h1>@(isNl ? "RESTAURANTINDELING" : "DISPOSITION DU RESTAURANT")</h1>
+<div class="admin-content-wrapper">
+    <h1>@(isNl ? "Disposition du Restaurant" : "Disposition du Restaurant")</h1>
 
     <div class="mb-4">
         <label for="canvasSizeSelect" class="form-label">@(isNl ? "Restaurantgrootte:" : "Taille du restaurant:")</label>
@@ -22,7 +17,9 @@
         <button id="saveCanvasButton" class="btn btn-success">@(isNl ? "Indeling opslaan" : "Enregistrer la disposition")</button>
     </div>
 
-    <canvas id="roomCanvas" width="800" height="600"></canvas>
+    <div class="canvas-wrapper-admin">
+        <canvas id="roomCanvas" width="800" height="600"></canvas>
+    </div>
 
     <div class="controls mt-4">
         <div>

@@ -27,11 +27,13 @@
 
 <style>
     .calendar-wrapper {
-        background-color: #121417;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
-        color: #f5f7fa;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 2.5rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        color: #000000;
         overflow-x: auto;
     }
 
@@ -43,9 +45,12 @@
     }
 
     .calendar-header h1 {
-        font-size: 1.75rem;
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
         margin: 0;
-        font-weight: 600;
+        font-weight: 400;
+        color: #000000;
+        letter-spacing: 2px;
     }
 
     .calendar-nav .btn {
@@ -61,10 +66,23 @@
         margin-top: 24px;
     }
 
+    .calendar-day-header {
+        font-family: 'Playfair Display', serif;
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+        padding: 0.5rem;
+    }
+
     .calendar-day {
-        background-color: rgba(255, 255, 255, 0.04);
-        border-radius: 14px;
-        padding: 12px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
+        padding: 1rem;
         min-height: 160px;
         display: flex;
         flex-direction: column;
@@ -73,7 +91,7 @@
         overflow-y: auto;
         overflow-x: hidden;
         scrollbar-width: thin;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: all 0.3s ease;
     }
 
     .calendar-day::-webkit-scrollbar {
@@ -91,17 +109,28 @@
     }
 
     .calendar-day:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 16px 32px rgba(15, 18, 25, 0.35);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border-color: rgba(0, 0, 0, 0.15);
+        background: rgba(255, 255, 255, 0.95);
     }
 
     .calendar-day.outside {
-        opacity: 0.35;
+        opacity: 0.4;
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .calendar-empty {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 0.85rem;
+        color: #999999;
+        font-style: italic;
     }
 
     .calendar-day.today {
-        border: 1px solid #28a745;
-        box-shadow: 0 0 0 1px rgba(40, 167, 69, 0.55);
+        border: 2px solid #000000;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        background: rgba(255, 255, 255, 1);
     }
 
     .day-label {
@@ -116,26 +145,31 @@
     }
 
     .reservation-card {
-        background: rgba(40, 167, 69, 0.12);
-        border: 1px solid rgba(40, 167, 69, 0.35);
-        border-radius: 10px;
-        padding: 10px;
+        background: rgba(0, 0, 0, 0.03);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-left: 3px solid #000000;
+        border-radius: 4px;
+        padding: 0.75rem;
         font-size: 0.9rem;
-        color: #d1f2e5;
+        color: #333333;
         width: 100%;
         box-sizing: border-box;
+        font-family: 'Cormorant Garamond', serif;
     }
 
     .reservation-card strong {
         display: block;
         font-size: 0.95rem;
-        color: #ffffff;
+        color: #000000;
+        font-family: 'Playfair Display', serif;
+        font-weight: 400;
     }
 
     .reservation-meta {
         margin: 0;
         font-size: 0.85rem;
-        line-height: 1.35;
+        line-height: 1.6;
+        font-family: 'Cormorant Garamond', serif;
     }
 
     .calendar-legend {
@@ -144,7 +178,8 @@
         align-items: center;
         margin-top: 12px;
         font-size: 0.9rem;
-        color: #a5acb8;
+        color: #666666;
+        font-family: 'Cormorant Garamond', serif;
     }
 
     .legend-dot {
@@ -156,47 +191,48 @@
     }
 
     .legend-upcoming {
-        background: linear-gradient(135deg, rgba(40, 167, 69, 0.8), rgba(72, 201, 176, 0.8));
+        background: #000000;
     }
 
     .legend-today {
-        background: linear-gradient(135deg, rgba(255, 193, 7, 0.8), rgba(255, 235, 59, 0.8));
+        background: #000000;
+        border: 2px solid #000000;
     }
 
     .legend-cancelled {
-        background: linear-gradient(135deg, rgba(220, 53, 69, 0.85), rgba(255, 99, 132, 0.85));
+        background: #dc3545;
     }
 
     .legend-deleted {
-        background: linear-gradient(135deg, rgba(255, 165, 0, 0.8), rgba(255, 193, 7, 0.85));
+        background: #ffc107;
     }
 
     .reservation-card.deleted-client {
-        background: rgba(255, 193, 7, 0.15);
-        border: 1px solid rgba(255, 193, 7, 0.6);
-        color: #fff3cd;
+        background: rgba(255, 193, 7, 0.1);
+        border-left-color: #ffc107;
+        color: #856404;
     }
 
     .reservation-card.deleted-client strong {
-        color: #fff;
+        color: #856404;
     }
 
     .reservation-card.deleted-client .reservation-meta {
-        color: #fff3cd;
+        color: #856404;
     }
 
     .reservation-card.cancelled {
-        background: rgba(220, 53, 69, 0.15);
-        border: 1px solid rgba(220, 53, 69, 0.5);
-        color: #f8d7da;
+        background: rgba(220, 53, 69, 0.1);
+        border-left-color: #dc3545;
+        color: #721c24;
     }
 
     .reservation-card.cancelled strong {
-        color: #ffe6e9;
+        color: #721c24;
     }
 
     .reservation-card.cancelled .reservation-meta {
-        color: #fce3e6;
+        color: #721c24;
     }
 
     @@media (max-width: 992px) {
@@ -224,9 +260,9 @@
             </div>
         </div>
         <div class="calendar-nav d-flex gap-2">
-            <a class="btn btn-outline-light btn-sm" href="@Url.Action("Reservations", new { offset = Model.MonthOffset - 1 })">@prevLabel</a>
-            <a class="btn btn-outline-light btn-sm" href="@Url.Action("Reservations", new { offset = 0 })">@todayLabel</a>
-            <a class="btn btn-outline-light btn-sm" href="@Url.Action("Reservations", new { offset = Model.MonthOffset + 1 })">@nextLabel</a>
+            <a class="btn btn-secondary btn-sm" href="@Url.Action("Reservations", new { offset = Model.MonthOffset - 1 })">@prevLabel</a>
+            <a class="btn btn-secondary btn-sm" href="@Url.Action("Reservations", new { offset = 0 })">@todayLabel</a>
+            <a class="btn btn-secondary btn-sm" href="@Url.Action("Reservations", new { offset = Model.MonthOffset + 1 })">@nextLabel</a>
         </div>
     </div>
 
@@ -252,7 +288,7 @@
 
                     @if (day.Reservations.Count == 0)
                     {
-                        <div class="text-muted small">@noReservationLabel</div>
+                        <div class="calendar-empty">@noReservationLabel</div>
                     }
                     else
                     {
