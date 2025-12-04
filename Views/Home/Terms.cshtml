@@ -2,88 +2,129 @@
     Layout = "_Layout";
     ViewData["Title"] = "Conditions générales";
 }
+<link rel="stylesheet" href="~/css/ElegantBackground.css">
+<link rel="stylesheet" href="~/css/StyleTerms.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
 
-<div class="container my-4">
-    <h1 class="mb-3">Conditions générales d'utilisation et de vente</h1>
-    <p>Dernière mise à jour: @DateTime.UtcNow.ToString("dd/MM/yyyy")</p>
+<div class="elegant-background">
+    <div class="curved-shape shape-1"></div>
+    <div class="curved-shape shape-2"></div>
+    <div class="curved-shape shape-3"></div>
+</div>
 
-    <h2>1. Éditeur du site</h2>
-    <p>
-        Ce site est édité par la société <strong>Reserva</strong> (ci-après « l'Éditeur »).<br />
-        Raison sociale: <strong>Reserva SARL</strong><br />
-        Adresse: <strong>12 Rue Exemple, 75000 Paris, France</strong><br />
-        Email: <strong>contact@reserva.example</strong> — Tél: <strong>+33 1 23 45 67 89</strong><br />
-        SIREN: <strong>123 456 789</strong> — TVA intracommunautaire: <strong>FR12 123456789</strong><br />
-        Directeur de la publication: <strong>Nom du responsable</strong>
-    </p>
+<div class="terms-page page-elegant">
+    <div class="terms-header">
+        <h1 class="terms-title">Conditions générales d'utilisation et de vente</h1>
+        <p class="terms-update">Dernière mise à jour: @DateTime.UtcNow.ToString("dd/MM/yyyy")</p>
+    </div>
 
-    <h2>2. Objet</h2>
-    <p>Les présentes conditions définissent les modalités d’accès et d’utilisation du site, ainsi que les règles applicables aux réservations et aux achats effectués via le site.</p>
+    <div class="terms-content">
 
-    <h2>3. Accès au site</h2>
-    <p>Le site est accessible 7j/7 et 24h/24, sauf interruption pour maintenance ou cas de force majeure. L’Éditeur ne saurait être tenu responsable en cas d’indisponibilité.</p>
+        <div class="terms-section">
+            <h2>1. Éditeur du site</h2>
+            <p>
+                Ce site est édité par la société <strong>Reserva</strong> (ci-après « l'Éditeur »).<br />
+                Raison sociale: <strong>Reserva SARL</strong><br />
+                Adresse: <strong>12 Rue Exemple, 75000 Paris, France</strong><br />
+                Email: <strong>contact@reserva.example</strong> — Tél: <strong>+33 1 23 45 67 89</strong><br />
+                SIREN: <strong>123 456 789</strong> — TVA intracommunautaire: <strong>FR12 123456789</strong><br />
+                Directeur de la publication: <strong>Nom du responsable</strong>
+            </p>
+        </div>
 
-    <h2>4. Compte et authentification</h2>
-    <p>La création d’un compte peut être requise pour certaines fonctionnalités. L’utilisateur s’engage à fournir des informations exactes et à maintenir la confidentialité de ses identifiants.</p>
+        <div class="terms-section">
+            <h2>2. Objet</h2>
+            <p>Les présentes conditions définissent les modalités d'accès et d'utilisation du site, ainsi que les règles applicables aux réservations et aux achats effectués via le site.</p>
+        </div>
 
-    <h2>5. Réservations</h2>
-    <p>Les réservations effectuées via le site sont soumises à confirmation. Des conditions spécifiques (horaires, annulation, no-show) peuvent s’appliquer et seront précisées lors du processus de réservation.</p>
+        <div class="terms-section">
+            <h2>3. Accès au site</h2>
+            <p>Le site est accessible 7j/7 et 24h/24, sauf interruption pour maintenance ou cas de force majeure. L'Éditeur ne saurait être tenu responsable en cas d'indisponibilité.</p>
+        </div>
 
-    <h2>6. Prix et paiement</h2>
-    <p>Les prix sont indiqués en euros TTC. Les paiements sont traités par un prestataire de paiement conforme aux normes en vigueur. L’Éditeur ne conserve pas les données complètes de carte bancaire.</p>
+        <div class="terms-section">
+            <h2>4. Compte et authentification</h2>
+            <p>La création d'un compte peut être requise pour certaines fonctionnalités. L'utilisateur s'engage à fournir des informations exactes et à maintenir la confidentialité de ses identifiants.</p>
+        </div>
 
-    <h2>7. Droit de rétractation</h2>
-    <p>Conformément au droit européen, le droit de rétractation peut ne pas s’appliquer aux prestations de restauration liées à une date ou une période déterminée (art. 16 de la Directive 2011/83/UE).</p>
+        <div class="terms-section">
+            <h2>5. Réservations</h2>
+            <p>Les réservations effectuées via le site sont soumises à confirmation. Des conditions spécifiques (horaires, annulation, no-show) peuvent s'appliquer et seront précisées lors du processus de réservation.</p>
+        </div>
 
-    <h2>8. Données personnelles (RGPD)</h2>
-    <p>Les données sont traitées conformément au Règlement (UE) 2016/679 (RGPD) et à la législation locale. Voir notre politique de confidentialité pour plus d’informations sur les finalités, la base légale, les durées de conservation et l’exercice de vos droits (accès, rectification, effacement, opposition, portabilité, limitation).</p>
-    <h2>8.1 Conservation des données en cas de suppression du compte</h2>
-    <p>
-        En cas de suppression de son compte par l’utilisateur, l’Éditeur supprime ou anonymise l’ensemble des données personnelles qui ne sont plus nécessaires.
-        Toutefois, si l’utilisateur a effectué une ou plusieurs réservations avant la suppression de son compte, certaines données associées à ces réservations peuvent être conservées, même après suppression du profil.
-        <br /><br />
-        Cette conservation est strictement limitée aux finalités suivantes :
-        <ul>
-            <li><strong>Respect d’obligations légales</strong> (notamment comptables, fiscales et de lutte contre la fraude) ;</li>
-            <li><strong>Gestion des réservations en cours</strong> (prestation à venir, facturation, gestion des litiges éventuels) ;</li>
-            <li><strong>Preuve contractuelle</strong> en cas de contestation ou de réclamation.</li>
-        </ul>
-        Les données ainsi conservées sont limitées au strict nécessaire (ex. : informations de réservation, date, prestation, montant, informations de facturation) et sont conservées pour la durée imposée par la loi ou nécessaire à l'exécution de la prestation.
-    </p>
+        <div class="terms-section">
+            <h2>6. Prix et paiement</h2>
+            <p>Les prix sont indiqués en euros TTC. Les paiements sont traités par un prestataire de paiement conforme aux normes en vigueur. L'Éditeur ne conserve pas les données complètes de carte bancaire.</p>
+        </div>
 
-    <h2>9. Médiation de la consommation</h2>
-    <p>
-        Conformément à l’article L612-1 du Code de la consommation, vous pouvez recourir gratuitement à un médiateur de la consommation.<br />
-        Médiateur compétent: <strong>Nom du médiateur</strong> — Site: <strong>https://www.exemple-mediateur.fr</strong> — Adresse: <strong>Adresse du médiateur</strong>.
-    </p>
+        <div class="terms-section">
+            <h2>7. Droit de rétractation</h2>
+            <p>Conformément au droit européen, le droit de rétractation peut ne pas s'appliquer aux prestations de restauration liées à une date ou une période déterminée (art. 16 de la Directive 2011/83/UE).</p>
+        </div>
 
-    <h2>10. Cookies et traceurs</h2>
-    <p>
-        Nous utilisons des cookies strictement nécessaires au fonctionnement du site (ex: sécurité, session). Avec votre consentement, nous pouvons utiliser des cookies de mesure d’audience et d’amélioration du service.<br />
-        Vous pouvez accepter ou refuser les cookies non essentiels via le bandeau d’information affiché à l’arrivée sur le site, et à tout moment en supprimant vos préférences de consentement dans votre navigateur.
-    </p>
+        <div class="terms-section">
+            <h2>8. Données personnelles (RGPD)</h2>
+            <p>Les données sont traitées conformément au Règlement (UE) 2016/679 (RGPD) et à la législation locale. Voir notre politique de confidentialité pour plus d'informations sur les finalités, la base légale, les durées de conservation et l'exercice de vos droits (accès, rectification, effacement, opposition, portabilité, limitation).</p>
+            <h3>8.1 Conservation des données en cas de suppression du compte</h3>
+            <p>
+                En cas de suppression de son compte par l'utilisateur, l'Éditeur supprime ou anonymise l'ensemble des données personnelles qui ne sont plus nécessaires.
+                Toutefois, si l'utilisateur a effectué une ou plusieurs réservations avant la suppression de son compte, certaines données associées à ces réservations peuvent être conservées, même après suppression du profil.
+            </p>
+            <p>Cette conservation est strictement limitée aux finalités suivantes :</p>
+            <ul>
+                <li><strong>Respect d'obligations légales</strong> (notamment comptables, fiscales et de lutte contre la fraude) ;</li>
+                <li><strong>Gestion des réservations en cours</strong> (prestation à venir, facturation, gestion des litiges éventuels) ;</li>
+                <li><strong>Preuve contractuelle</strong> en cas de contestation ou de réclamation.</li>
+            </ul>
+            <p>Les données ainsi conservées sont limitées au strict nécessaire (ex. : informations de réservation, date, prestation, montant, informations de facturation) et sont conservées pour la durée imposée par la loi ou nécessaire à l'exécution de la prestation.</p>
+        </div>
 
-    <h2>9. Cookies</h2>
-    <p>Détail des catégories:
-        <ul>
-            <li><strong>Nécessaires</strong>: sécurité, session. Base légale: intérêt légitime/exécution du service.</li>
-            <li><strong>Mesure d’audience</strong> (optionnels): statistiques anonymisées. Base légale: consentement.</li>
-        </ul>
-    </p>
+        <div class="terms-section">
+            <h2>9. Médiation de la consommation</h2>
+            <p>
+                Conformément à l'article L612-1 du Code de la consommation, vous pouvez recourir gratuitement à un médiateur de la consommation.<br />
+                Médiateur compétent: <strong>Nom du médiateur</strong> — Site: <strong><a href="https://www.exemple-mediateur.fr" target="_blank">https://www.exemple-mediateur.fr</a></strong> — Adresse: <strong>Adresse du médiateur</strong>.
+            </p>
+        </div>
 
-    <h2>11. Propriété intellectuelle</h2>
-    <p>Les contenus du site (textes, images, logos, marques) sont protégés. Toute reproduction non autorisée est interdite.</p>
+        <div class="terms-section">
+            <h2>10. Cookies et traceurs</h2>
+            <p>
+                Nous utilisons des cookies strictement nécessaires au fonctionnement du site (ex: sécurité, session). Avec votre consentement, nous pouvons utiliser des cookies de mesure d'audience et d'amélioration du service.<br />
+                Vous pouvez accepter ou refuser les cookies non essentiels via le bandeau d'information affiché à l'arrivée sur le site, et à tout moment en supprimant vos préférences de consentement dans votre navigateur.
+            </p>
+            <p>Détail des catégories:</p>
+            <ul>
+                <li><strong>Nécessaires</strong>: sécurité, session. Base légale: intérêt légitime/exécution du service.</li>
+                <li><strong>Mesure d'audience</strong> (optionnels): statistiques anonymisées. Base légale: consentement.</li>
+            </ul>
+        </div>
 
-    <h2>12. Responsabilité</h2>
-    <p>L’Éditeur ne peut être tenu responsable des dommages indirects résultant de l’utilisation du site. Les liens externes ne sauraient engager sa responsabilité.</p>
+        <div class="terms-section">
+            <h2>11. Propriété intellectuelle</h2>
+            <p>Les contenus du site (textes, images, logos, marques) sont protégés. Toute reproduction non autorisée est interdite.</p>
+        </div>
 
-    <h2>13. Droit applicable et litiges</h2>
-    <p>Les présentes conditions sont soumises au droit du pays de l’Éditeur, sous réserve des dispositions d’ordre public du droit du consommateur européen. En cas de litige, une procédure de médiation peut être proposée avant toute action judiciaire.</p>
+        <div class="terms-section">
+            <h2>12. Responsabilité</h2>
+            <p>L'Éditeur ne peut être tenu responsable des dommages indirects résultant de l'utilisation du site. Les liens externes ne sauraient engager sa responsabilité.</p>
+        </div>
 
-    <h2>14. Contact</h2>
-    <p>Pour toute question ou réclamation: email support, adresse postale, téléphone.</p>
+        <div class="terms-section">
+            <h2>13. Droit applicable et litiges</h2>
+            <p>Les présentes conditions sont soumises au droit du pays de l'Éditeur, sous réserve des dispositions d'ordre public du droit du consommateur européen. En cas de litige, une procédure de médiation peut être proposée avant toute action judiciaire.</p>
+        </div>
 
-    <hr />
-    <p class="small text-muted">Ces informations sont fournies à titre indicatif. Adaptez-les à votre activité, votre juridiction et vos obligations spécifiques (mentions légales, médiation, politique de confidentialité détaillée).</p>
+        <div class="terms-section">
+            <h2>14. Contact</h2>
+            <p>Pour toute question ou réclamation: <strong>contact@reserva.example</strong>, <strong>12 Rue Exemple, 75000 Paris, France</strong>, <strong>+33 1 23 45 67 89</strong>.</p>
+        </div>
+    </div>
+
+    <div class="terms-footer">
+        <p>Ces informations sont fournies à titre indicatif. Adaptez-les à votre activité, votre juridiction et vos obligations spécifiques (mentions légales, médiation, politique de confidentialité détaillée).</p>
+    </div>
 </div>
 

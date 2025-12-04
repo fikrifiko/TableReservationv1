@@ -1,12 +1,22 @@
 ﻿@{
     ViewData["Title"] = "Réservation Client";
 }
+<link rel="stylesheet" href="~/css/ElegantBackground.css">
 <link rel="stylesheet" href="~/css/StylePageClient.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+
+<div class="elegant-background">
+    <div class="curved-shape shape-1"></div>
+    <div class="curved-shape shape-2"></div>
+    <div class="curved-shape shape-3"></div>
+</div>
 
 <!-- Overlay pour l'arrière-plan -->
 <div id="reservationOverlay" class="reservation-overlay"></div>
 
-<div class="client-reservation-container container text-center mt-5 pt-5">
+<div class="client-reservation-container container text-center mt-5 pt-5 page-elegant">
     <h1>Réservez votre table</h1>
 
     <div class="mt-3">
@@ -19,7 +29,9 @@
     </div>
 
     <div id="loadingMessage" class="text-muted mt-2" style="display: none;">Chargement de la salle...</div>
-    <canvas id="roomCanvas" class="mt-4" style="border:1px solid black;"></canvas>
+    <div class="canvas-wrapper mt-4">
+        <canvas id="roomCanvas"></canvas>
+    </div>
 </div>
 
 <div id="reservationModal" class="modal custom-reservation-modal" role="dialog" aria-modal="true" aria-labelledby="reservationModalTitle">

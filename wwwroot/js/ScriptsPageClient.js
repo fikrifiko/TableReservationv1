@@ -24,16 +24,25 @@ function drawTable(table) {
     }
 
 
-    // color by reserved state
-    ctx.fillStyle = tablesReserved.includes(table.id) ? "#e6b0aa" : "#6D9F71";
-
-    // rounded rect
-    const radius = 10;
+    // color by reserved state - style élégant
+    const isReserved = tablesReserved.includes(table.id);
+    const baseColor = isReserved ? "#d4a5a5" : "#8B9A7F";
+    const borderColor = isReserved ? "#b88888" : "#6B7A5F";
+    
+    // rounded rect avec style élégant
+    const radius = 12;
     const x = -table.width / 2;
     const y = -table.height / 2;
     const width = table.width;
     const height = table.height;
 
+    // Ombre élégante
+    ctx.shadowColor = isReserved ? "rgba(180, 136, 136, 0.4)" : "rgba(107, 122, 95, 0.4)";
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 4;
+
+    // Fond principal
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -46,36 +55,72 @@ function drawTable(table) {
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
 
-    // shadow
-    ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetX = 4;
-    ctx.shadowOffsetY = 4;
-
-    // fill
+    // Dégradé élégant
+    const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
+    gradient.addColorStop(0, isReserved ? "#e6c5c5" : "#a4b396");
+    gradient.addColorStop(1, baseColor);
+    ctx.fillStyle = gradient;
     ctx.fill();
 
-    // reset shadow
+    // Bordure élégante
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Reset shadow
     ctx.shadowColor = "transparent";
 
-    // label
-    ctx.fillStyle = "white";
-    ctx.font = "bold 14px Arial";
+    // Label avec style élégant
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "600 15px 'Cormorant Garamond', serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(table.name, 0, -8);
-
-    // seats
-    ctx.font = "12px Arial";
-    ctx.fillText(`(${table.seats} P)`, 0, 10);
+    
+    // Ombre du texte pour meilleure lisibilité
+    ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
+    ctx.fillText(table.name, 0, -10);
+    
+    // Seats avec style
+    ctx.font = "400 13px 'Cormorant Garamond', serif";
+    ctx.fillText(`${table.seats} personnes`, 0, 12);
+    
+    // Reset shadow
+    ctx.shadowColor = "transparent";
 
     ctx.restore();
 }
 
 
-// redraw all
+// redraw all avec fond élégant
 function drawTables() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Fond élégant avec dégradé subtil
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, "#fafafa");
+    gradient.addColorStop(1, "#ffffff");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Lignes de grille subtiles pour un effet élégant
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.03)";
+    ctx.lineWidth = 1;
+    const gridSize = 50;
+    for (let x = 0; x <= canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+    }
+    for (let y = 0; y <= canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+    
+    // Dessiner les tables
     tables.forEach(table => drawTable(table));
 }
 
