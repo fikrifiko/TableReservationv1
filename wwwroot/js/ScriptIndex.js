@@ -173,38 +173,138 @@
             
             ctx.restore();
 
-            // === CHAISES AUTOUR DE LA TABLE ===
-            const numChairs = table.seats;
-            const chairRadius = Math.min(width, height) * 0.12;
-            const chairDistance = Math.max(width, height) * 0.6;
+            // === CHAISES AUTOUR DE LA TABLE (disposition rectangulaire) ===
+            const numChairs = table.seats; // Nombre de chaises = nombre de places
+            const chairSize = Math.min(width, height) * 0.12;
+            // 0.5cm = environ 19 pixels (à 96 DPI, 1cm = 37.8px, donc 0.5cm ≈ 19px)
+            const chairDistance = 19; // Distance fixe de 0.5cm de la table
             
             ctx.fillStyle = "#8B9A7F";
             ctx.strokeStyle = "#6B7A5F";
             ctx.lineWidth = 1.5;
             
-            for (let i = 0; i < numChairs; i++) {
-                const angle = (Math.PI * 2 * i) / numChairs;
-                const chairX = Math.cos(angle) * chairDistance;
-                const chairY = Math.sin(angle) * chairDistance;
-                
+            // Fonction helper pour dessiner un rectangle arrondi
+            function roundRect(x, y, w, h, r) {
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.lineTo(x + w - r, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+                ctx.lineTo(x + w, y + h - r);
+                ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                ctx.lineTo(x + r, y + h);
+                ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+                ctx.lineTo(x, y + r);
+                ctx.quadraticCurveTo(x, y, x + r, y);
+                ctx.closePath();
+            }
+            
+            // Déterminer les grands et petits côtés
+            const isHorizontal = width >= height; // Table horizontale (width > height)
+            const longSide = Math.max(width, height); // Grand côté
+            const shortSide = Math.min(width, height); // Petit côté
+            
+            // Calculer la répartition selon le nombre de places
+            let topChairs = 0, rightChairs = 0, bottomChairs = 0, leftChairs = 0;
+            
+            if (numChairs === 2) {
+                // Table de 2 : 1 chaise en face de l'autre
+                if (isHorizontal) {
+                    topChairs = 1;
+                    bottomChairs = 1;
+                } else {
+                    leftChairs = 1;
+                    rightChairs = 1;
+                }
+            } else if (numChairs === 6) {
+                // Table de 6 : 2 chaises sur les grands côtés, 1 sur les petits
+                if (isHorizontal) {
+                    topChairs = 2;
+                    bottomChairs = 2;
+                    leftChairs = 1;
+                    rightChairs = 1;
+                } else {
+                    topChairs = 1;
+                    bottomChairs = 1;
+                    leftChairs = 2;
+                    rightChairs = 2;
+                }
+            } else if (numChairs === 10) {
+                // Table de 10 : 3 chaises sur les grands côtés, 2 sur les petits
+                if (isHorizontal) {
+                    topChairs = 3;
+                    bottomChairs = 3;
+                    leftChairs = 2;
+                    rightChairs = 2;
+                } else {
+                    topChairs = 2;
+                    bottomChairs = 2;
+                    leftChairs = 3;
+                    rightChairs = 3;
+                }
+            } else {
+                // Pour les autres nombres, répartition équitable
+                const chairsPerSide = Math.ceil(numChairs / 4);
+                topChairs = Math.min(chairsPerSide, numChairs);
+                rightChairs = Math.min(chairsPerSide, Math.max(0, numChairs - topChairs));
+                bottomChairs = Math.min(chairsPerSide, Math.max(0, numChairs - topChairs - rightChairs));
+                leftChairs = numChairs - topChairs - rightChairs - bottomChairs;
+            }
+            
+            // Fonction pour dessiner une chaise
+            function drawChair(chairX, chairY) {
                 ctx.save();
                 ctx.translate(chairX, chairY);
                 
-                // Ombre de la chaise
                 ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
                 ctx.shadowBlur = 6;
                 ctx.shadowOffsetX = 2;
                 ctx.shadowOffsetY = 2;
                 
-                // Siège de la chaise (cercle)
-                ctx.beginPath();
-                ctx.arc(0, 0, chairRadius, 0, Math.PI * 2);
+                roundRect(-chairSize / 2, -chairSize / 2, chairSize, chairSize, 3);
                 ctx.fill();
-                
-                // Bordure du siège
                 ctx.stroke();
                 
                 ctx.restore();
+            }
+            
+            // Côté haut
+            if (topChairs > 0) {
+                const topSpacing = width / (topChairs + 1);
+                for (let i = 1; i <= topChairs; i++) {
+                    const chairX = -width / 2 + (topSpacing * i);
+                    const chairY = -height / 2 - chairDistance - chairSize / 2;
+                    drawChair(chairX, chairY);
+                }
+            }
+            
+            // Côté droit
+            if (rightChairs > 0) {
+                const rightSpacing = height / (rightChairs + 1);
+                for (let i = 1; i <= rightChairs; i++) {
+                    const chairX = width / 2 + chairDistance + chairSize / 2;
+                    const chairY = -height / 2 + (rightSpacing * i);
+                    drawChair(chairX, chairY);
+                }
+            }
+            
+            // Côté bas
+            if (bottomChairs > 0) {
+                const bottomSpacing = width / (bottomChairs + 1);
+                for (let i = 1; i <= bottomChairs; i++) {
+                    const chairX = -width / 2 + (bottomSpacing * i);
+                    const chairY = height / 2 + chairDistance + chairSize / 2;
+                    drawChair(chairX, chairY);
+                }
+            }
+            
+            // Côté gauche
+            if (leftChairs > 0) {
+                const leftSpacing = height / (leftChairs + 1);
+                for (let i = 1; i <= leftChairs; i++) {
+                    const chairX = -width / 2 - chairDistance - chairSize / 2;
+                    const chairY = -height / 2 + (leftSpacing * i);
+                    drawChair(chairX, chairY);
+                }
             }
 
             // === LABEL DE LA TABLE ===
