@@ -85,7 +85,7 @@ public class AdminController : Controller
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddSeconds(10000),
+            expires: DateTime.UtcNow.AddSeconds(2500),
             signingCredentials: credentials
         );
 
@@ -105,7 +105,7 @@ public class AdminController : Controller
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.UtcNow.AddSeconds(250)
+                Expires = DateTimeOffset.UtcNow.AddSeconds(30)
             }
         );
 

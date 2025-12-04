@@ -2,7 +2,7 @@
 using Stripe;
 using Stripe.Checkout;
 using System.Globalization;
-using Table_Reservation.Data; // Pour accéder au DbContext
+using Table_Reservation.Data; 
 using Table_Reservation.Models;
 using Table_Reservation.Services;
 
@@ -85,7 +85,6 @@ public class ReservationController : Controller
                 Console.WriteLine($"Détails de l'erreur interne : {ex.InnerException.Message}");
             }
 
-            // Afficher une vue d'erreur ou retourner une réponse d'erreur
             return StatusCode(500, "Erreur lors de l'enregistrement dans la base de données.");
         }
     }
@@ -101,7 +100,6 @@ public class ReservationController : Controller
 
         try
         {
-            // Convertir les paramètres en objets DateTime/TimeSpan
             DateTime reservationDate = DateTime.Parse(date);
             TimeSpan reservationTime = TimeSpan.Parse(time);
 
@@ -110,7 +108,6 @@ public class ReservationController : Controller
                 .Where(r => r.ReservationDate == reservationDate && !r.IsCancelled)
                 .ToList(); // Récupération des données côté mémoire
 
-            // Filtrer en mémoire pour gérer la logique de TimeSpan // bug 2h apres et une 1 avant pour bloquer tables
             var filteredReservations = reservations
                  .Where(r =>
                      r.ReservationHoure.TimeOfDay.Subtract(TimeSpan.FromHours(1)) <= reservationTime && // L'heure choisie est après ou égale à (heure de début - 1 heures)

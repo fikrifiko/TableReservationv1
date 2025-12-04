@@ -218,11 +218,12 @@ app.Use(async (context, next) =>
     context.Response.Headers["Referrer-Policy"] = "no-referrer";
     context.Response.Headers["Permissions-Policy"] = "geolocation=()";
     // CSP (dev: autorise connexions localhost et websockets pour BrowserLink/refresh)
-    var csp = "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'";
+    var csp = "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://fonts.googleapis.com";
     if (app.Environment.IsDevelopment())
     {
-        csp += "; connect-src 'self' http://localhost:* ws: wss:";
+        csp += " http://localhost:* ws: wss:";
     }
+    csp += "; frame-ancestors 'none'";
     context.Response.Headers["Content-Security-Policy"] = csp;
     await next();
 });

@@ -6,32 +6,39 @@
 
 <section class="upload-section">
     <div class="upload-container">
-        <h2>Télécharger un Nouveau Menu</h2>
-        <p>Importez un fichier PDF contenant le menu du restaurant en plusieurs langues.</p>
+        <h2>Menu du Restaurant</h2>
+        <p>Le menu est maintenant affiché directement sur le site.</p>
+        <div style="margin: 30px 0;">
+            <a href="/Home/Menu" class="btn btn-primary" style="padding: 15px 30px; font-size: 18px; text-decoration: none; display: inline-block; margin: 10px;">
+                Voir le Menu
+            </a>
+        </div>
+        <hr style="border-color: rgba(212, 175, 55, 0.3); margin: 30px 0;">
+        <h3 style="color: #d4af37; margin-bottom: 20px;">Ancien système d'upload PDF (désactivé)</h3>
+        <p style="color: #999; font-style: italic;">L'upload de PDFs n'est plus utilisé. Le menu est maintenant hard-codé avec des plats belges authentiques.</p>
 
-        <form asp-controller="File" asp-action="UploadPdf" method="post" enctype="multipart/form-data" class="upload-form">
-            @Html.AntiForgeryToken()
+        <div style="opacity: 0.5; pointer-events: none;">
+            <form asp-controller="File" asp-action="UploadPdf" method="post" enctype="multipart/form-data" class="upload-form">
+                @Html.AntiForgeryToken()
 
-            <!-- Upload Menu Français -->
-            <label for="file-fr" class="custom-file-upload">
-                Choisir un fichier PDF (Français)
-                <input type="file" name="fileFr" id="file-fr" accept="application/pdf" required hidden>
-            </label>
+                <label for="file-fr" class="custom-file-upload" style="opacity: 0.5;">
+                    Choisir un fichier PDF (Français) - Désactivé
+                    <input type="file" name="fileFr" id="file-fr" accept="application/pdf" disabled hidden>
+                </label>
 
-            <!-- Upload Menu Anglais -->
-            <label for="file-en" class="custom-file-upload">
-                Choisir un fichier PDF (Anglais)
-                <input type="file" name="fileEn" id="file-en" accept="application/pdf" required hidden>
-            </label>
+                <label for="file-en" class="custom-file-upload" style="opacity: 0.5;">
+                    Choisir un fichier PDF (Anglais) - Désactivé
+                    <input type="file" name="fileEn" id="file-en" accept="application/pdf" disabled hidden>
+                </label>
 
-            <!-- Upload Menu Néerlandais -->
-            <label for="file-nl" class="custom-file-upload">
-                Choisir un fichier PDF (Néerlandais)
-                <input type="file" name="fileNl" id="file-nl" accept="application/pdf" required hidden>
-            </label>
+                <label for="file-nl" class="custom-file-upload" style="opacity: 0.5;">
+                    Choisir un fichier PDF (Néerlandais) - Désactivé
+                    <input type="file" name="fileNl" id="file-nl" accept="application/pdf" disabled hidden>
+                </label>
 
-            <button type="submit" class="upload-btn">📤 Uploader les PDFs</button>
-        </form>
+                <button type="submit" class="upload-btn" disabled style="opacity: 0.5; cursor: not-allowed;">📤 Uploader les PDFs (Désactivé)</button>
+            </form>
+        </div>
     </div>
 </section>
 <link rel="stylesheet" href="~/css/StyleUploadPdf.css" asp-append-version="true">

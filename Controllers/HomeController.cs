@@ -28,7 +28,8 @@ namespace Table_Reservation.Controllers
         }
         public IActionResult Menu()
         {
-            return View();
+            var isDutch = (System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLowerInvariant() ?? "fr") == "nl";
+            return View(isDutch ? "Menu.nl" : "Menu");
         }
         public IActionResult Upload()
         {

@@ -109,13 +109,6 @@ public class FileController : Controller
 
     public IActionResult ViewPdf(string lang = "fr")
     {
-        string filePath = $"/uploads/menu_{lang}.pdf";
-
-        if (!System.IO.File.Exists(Path.Combine(_webHostEnvironment.WebRootPath, filePath.TrimStart('/'))))
-        {
-            return Content("Aucun fichier PDF disponible pour cette langue.");
-        }
-
-        return View("ViewPdf", filePath);
+        return RedirectToAction("Menu", "Home");
     }
 }

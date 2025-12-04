@@ -28,7 +28,7 @@
                             var twoLetterNav = System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr";
                             var isNlNav = twoLetterNav == "nl";
                         }
-                        <li class="nav-item"><a class="nav-link" href="/File/ViewPdf">Menu</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Menu", "Home")">Menu</a></li>
                         <li class="nav-item"><a class="nav-link" href="/Home/Terms">@(isNlNav ? "Algemene voorwaarden" : "Conditions générales")</a></li>
                         <li class="nav-item"><a class="nav-link" href="#locations">@(isNlNav ? "Locaties" : "Emplacements")</a></li>
                         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>

@@ -8,10 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="~/css/StyleHomeIndex.css">
+    <link rel="stylesheet" href="~/css/StyleHomeIndex.css?v=@DateTime.Now.Ticks">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body class="page-accueil">
-
     @if (Context.Request.Query["message"] == "deconnected")
     {
         <div class="alert alert-info text-center" role="alert" style="margin: 10px 20px;">
@@ -19,24 +21,29 @@
         </div>
     }
 
-    <section class="hero container-fluid">
-        <div class="row justify-content-center align-items-center text-center">
-            <div class="col-12 col-md-8">
-                <h1>Restaurant <span>Reserva</span></h1>
-                <p>Une expérience gastronomique unique</p>
-                <div class="buttons d-flex flex-column flex-md-row justify-content-center gap-3">
-                    <a href="/Client/PageReservationClient" class="btn btn-lg">Réserver une table</a>
-                    <a href="#reservation" class="btn btn-lg">Commander en ligne</a>
+    <section class="hero">
+        <div class="row justify-content-center align-items-center text-center" style="margin: 0; width: 100%;">
+            <div class="col-12 col-md-10 col-lg-8" style="padding: 0;">
+                <div class="hero-content">
+                    <h1 class="restaurant-title">
+                        <span class="restaurant-name">Restaurant</span>
+                        <span class="restaurant-brand">Reserva</span>
+                    </h1>
+                    <div class="title-divider"></div>
+                    <p class="restaurant-tagline">Une expérience gastronomique unique</p>
+                    <div class="hero-buttons">
+                        <a href="/Client/PageReservationClient" class="btn btn-primary btn-reservation">Réserver une table</a>
+                        <a href="/Home/Menu" class="btn btn-outline-light btn-menu">Notre menu</a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <footer>
-        <p>2025 Reserva &#64; Tous droits réservés.</p>
+    <footer class="home-footer">
+        <p>&copy; 2025 Reserva. Tous droits réservés.</p>
     </footer>
 
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
