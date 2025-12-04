@@ -72,12 +72,69 @@
                 ctx.rotate(Math.PI / 2);
             }
 
-            const radius = 10;
             const x = -table.width / 2;
             const y = -table.height / 2;
             const width = table.width;
             const height = table.height;
+            const radius = Math.min(width, height) * 0.15; // Radius proportionnel
 
+            // === OMBRE PORTÉE DE LA TABLE (sous la table) ===
+            ctx.save();
+            ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 8;
+            
+            // Ombre ovale sous la table
+            ctx.beginPath();
+            ctx.ellipse(0, height / 2 + 5, width * 0.6, height * 0.3, 0, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+            ctx.fill();
+            ctx.restore();
+
+            // === PIEDS DE TABLE (4 pieds) ===
+            const legWidth = Math.max(4, width * 0.08);
+            const legHeight = height * 0.3;
+            const legOffset = Math.min(width, height) * 0.25;
+            
+            ctx.fillStyle = "#4a4a4a"; // Couleur métal foncé
+            ctx.strokeStyle = "#2a2a2a";
+            ctx.lineWidth = 1;
+            
+            // Pieds aux 4 coins
+            const legs = [
+                { x: -width / 2 + legOffset, y: height / 2 },
+                { x: width / 2 - legOffset, y: height / 2 },
+                { x: -width / 2 + legOffset, y: height / 2 - legHeight },
+                { x: width / 2 - legOffset, y: height / 2 - legHeight }
+            ];
+            
+            legs.forEach(leg => {
+                // Ombre du pied
+                ctx.save();
+                ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+                ctx.shadowBlur = 5;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                ctx.fillRect(leg.x - legWidth / 2, leg.y - legHeight, legWidth, legHeight);
+                ctx.restore();
+                
+                // Reflet sur le pied
+                ctx.fillStyle = "#6a6a6a";
+                ctx.fillRect(leg.x - legWidth / 2, leg.y - legHeight, legWidth / 2, legHeight);
+                ctx.fillStyle = "#4a4a4a";
+            });
+
+            // === PLANCHER DE TABLE (dessus) ===
+            ctx.save();
+            
+            // Ombre portée du dessus
+            ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 3;
+            
+            // Dessus de table avec coins arrondis
             ctx.beginPath();
             ctx.moveTo(x + radius, y);
             ctx.lineTo(x + width - radius, y);
@@ -90,47 +147,82 @@
             ctx.quadraticCurveTo(x, y, x + radius, y);
             ctx.closePath();
 
-            // Style élégant comme le client
-            const baseColor = "#8B9A7F";
-            const borderColor = "#6B7A5F";
-            
-            // Ombre élégante
-            ctx.shadowColor = "rgba(107, 122, 95, 0.4)";
-            ctx.shadowBlur = 12;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 4;
-
-            // Dégradé élégant
-            const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
-            gradient.addColorStop(0, "#a4b396");
-            gradient.addColorStop(1, baseColor);
-            ctx.fillStyle = gradient;
+            // Texture bois avec dégradé réaliste
+            const woodGradient = ctx.createLinearGradient(x, y, x + width, y + height);
+            woodGradient.addColorStop(0, "#d4c5a5");
+            woodGradient.addColorStop(0.3, "#c4b595");
+            woodGradient.addColorStop(0.6, "#b4a585");
+            woodGradient.addColorStop(1, "#a49575");
+            ctx.fillStyle = woodGradient;
             ctx.fill();
-
-            // Bordure élégante
-            ctx.strokeStyle = borderColor;
+            
+            // Bordure du dessus
+            ctx.strokeStyle = "#948565";
             ctx.lineWidth = 2;
             ctx.stroke();
+            
+            // Lignes de texture bois (subtiles)
+            ctx.strokeStyle = "rgba(148, 133, 101, 0.3)";
+            ctx.lineWidth = 1;
+            for (let i = 1; i < 4; i++) {
+                ctx.beginPath();
+                ctx.moveTo(x + (width / 4) * i, y + 2);
+                ctx.lineTo(x + (width / 4) * i, y + height - 2);
+                ctx.stroke();
+            }
+            
+            ctx.restore();
 
-            // Reset shadow
-            ctx.shadowColor = "transparent";
+            // === CHAISES AUTOUR DE LA TABLE ===
+            const numChairs = table.seats;
+            const chairRadius = Math.min(width, height) * 0.12;
+            const chairDistance = Math.max(width, height) * 0.6;
+            
+            ctx.fillStyle = "#8B9A7F";
+            ctx.strokeStyle = "#6B7A5F";
+            ctx.lineWidth = 1.5;
+            
+            for (let i = 0; i < numChairs; i++) {
+                const angle = (Math.PI * 2 * i) / numChairs;
+                const chairX = Math.cos(angle) * chairDistance;
+                const chairY = Math.sin(angle) * chairDistance;
+                
+                ctx.save();
+                ctx.translate(chairX, chairY);
+                
+                // Ombre de la chaise
+                ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                
+                // Siège de la chaise (cercle)
+                ctx.beginPath();
+                ctx.arc(0, 0, chairRadius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Bordure du siège
+                ctx.stroke();
+                
+                ctx.restore();
+            }
 
-            // Label avec style élégant
+            // === LABEL DE LA TABLE ===
             ctx.fillStyle = "#ffffff";
-            ctx.font = "600 15px 'Cormorant Garamond', serif";
+            ctx.font = "600 16px 'Cormorant Garamond', serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             
-            // Ombre du texte pour meilleure lisibilité
-            ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+            // Ombre du texte
+            ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
             ctx.shadowBlur = 4;
             ctx.shadowOffsetX = 1;
             ctx.shadowOffsetY = 1;
-            ctx.fillText(table.name, 0, -10);
+            ctx.fillText(table.name, 0, -8);
             
-            // Seats avec style
-            ctx.font = "400 13px 'Cormorant Garamond', serif";
-            ctx.fillText(`${table.seats} personnes`, 0, 12);
+            // Nombre de personnes
+            ctx.font = "400 12px 'Cormorant Garamond', serif";
+            ctx.fillText(`${table.seats} pers.`, 0, 10);
             
             // Reset shadow
             ctx.shadowColor = "transparent";
