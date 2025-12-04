@@ -4,36 +4,37 @@
     ViewData["Title"] = isNl ? "Tafelindeling" : "Disposition des Tables";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-<div class="admin-content-wrapper">
-    <h1>@(isNl ? "Disposition du Restaurant" : "Disposition du Restaurant")</h1>
+<div class="admin-content-wrapper admin-dashboard-centered">
+    <h1 class="text-center">@(isNl ? "Disposition du Restaurant" : "Disposition du Restaurant")</h1>
 
-    <div class="mb-4">
-        <label for="canvasSizeSelect" class="form-label">@(isNl ? "Restaurantgrootte:" : "Taille du restaurant:")</label>
-        <select id="canvasSizeSelect" class="form-select w-auto d-inline-block">
-            <option value="1">@(isNl ? "Standaard" : "Taille par défaut")</option>
-            <option value="1.50">@(isNl ? "Middelgroot" : "Moyen")</option>
-            <option value="1.90">@(isNl ? "Groot" : "Large")</option>
-        </select>
-        <button id="saveCanvasButton" class="btn btn-success">@(isNl ? "Indeling opslaan" : "Enregistrer la disposition")</button>
+    <div class="admin-controls-section text-center mb-4">
+        <div class="admin-control-item">
+            <label for="canvasSizeSelect" class="form-label">@(isNl ? "Restaurantgrootte:" : "Taille du restaurant:")</label>
+            <select id="canvasSizeSelect" class="form-select admin-select">
+                <option value="1">@(isNl ? "Standaard" : "Taille par défaut")</option>
+                <option value="1.50">@(isNl ? "Middelgroot" : "Moyen")</option>
+                <option value="1.90">@(isNl ? "Groot" : "Large")</option>
+            </select>
+            <button id="saveCanvasButton" class="btn btn-success">@(isNl ? "Indeling opslaan" : "Enregistrer la disposition")</button>
+        </div>
     </div>
 
-    <div class="canvas-wrapper-admin">
+    <div class="canvas-wrapper">
         <canvas id="roomCanvas" width="800" height="600"></canvas>
     </div>
 
-    <div class="controls mt-4">
-        <div>
-            <br />
-            <label for="seatsInput" class="me-2">@((isNl ? "Aantal personen" : "Nombre de personnes") + " :")</label>
-            <input type="number" id="seatsInput" min="2" max="10" step="2" value="2">
+    <div class="admin-controls-section text-center mt-4">
+        <div class="admin-control-item">
+            <label for="seatsInput" class="form-label">@((isNl ? "Aantal personen" : "Nombre de personnes") + " :")</label>
+            <input type="number" id="seatsInput" min="2" max="10" step="2" value="2" class="admin-input-number">
         </div>
 
-        <div class="mt-3">
+        <div class="admin-control-buttons mt-3">
             <button id="addTableButton" class="btn btn-primary">@(isNl ? "Tafel toevoegen" : "Ajouter une table")</button>
             <button id="rotateTableButton" class="btn btn-secondary">@(isNl ? "Draaien" : "Faire pivoter")</button>
             <button id="deleteTableButton" class="btn btn-danger">@(isNl ? "Verwijderen" : "Supprimer")</button>
         </div>
-        <div class="mt-3">
+        <div class="admin-control-buttons mt-3">
             <button id="modifyTableNameButton" class="btn btn-warning">@(isNl ? "Naam bewerken" : "Modifier le nom")</button>
             <button id="saveButton" class="btn btn-success">@(isNl ? "Opslaan in DB" : "Enregistrer dans la DB")</button>
             <a href="/AdminView/Upload" class="btn btn-secondary">@(isNl ? "Menu beheren" : "Gérer Menu")</a>

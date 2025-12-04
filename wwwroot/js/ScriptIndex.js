@@ -57,7 +57,13 @@
     let selectedTable = null;
 
     function drawTables() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Fond élégant avec dégradé subtil
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, "#f5f5f0");
+        gradient.addColorStop(1, "#ffffff");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
         tables.forEach(table => {
             ctx.save();
             ctx.translate(table.x + table.width / 2, table.y + table.height / 2);
@@ -84,24 +90,50 @@
             ctx.quadraticCurveTo(x, y, x + radius, y);
             ctx.closePath();
 
-            ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
-            ctx.shadowBlur = 8;
-            ctx.shadowOffsetX = 4;
+            // Style élégant comme le client
+            const baseColor = "#8B9A7F";
+            const borderColor = "#6B7A5F";
+            
+            // Ombre élégante
+            ctx.shadowColor = "rgba(107, 122, 95, 0.4)";
+            ctx.shadowBlur = 12;
+            ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 4;
 
-            ctx.fillStyle = "#6D9F71";
+            // Dégradé élégant
+            const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
+            gradient.addColorStop(0, "#a4b396");
+            gradient.addColorStop(1, baseColor);
+            ctx.fillStyle = gradient;
             ctx.fill();
 
+            // Bordure élégante
+            ctx.strokeStyle = borderColor;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Reset shadow
             ctx.shadowColor = "transparent";
 
-            ctx.fillStyle = "white";
-            ctx.font = "bold 14px Arial";
+            // Label avec style élégant
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "600 15px 'Cormorant Garamond', serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(table.name, 0, -8);
-
-            ctx.font = "12px Arial";
-            ctx.fillText(`(${table.seats} P)`, 0, 10);
+            
+            // Ombre du texte pour meilleure lisibilité
+            ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 1;
+            ctx.shadowOffsetY = 1;
+            ctx.fillText(table.name, 0, -10);
+            
+            // Seats avec style
+            ctx.font = "400 13px 'Cormorant Garamond', serif";
+            ctx.fillText(`${table.seats} personnes`, 0, 12);
+            
+            // Reset shadow
+            ctx.shadowColor = "transparent";
 
             ctx.restore();
         });
