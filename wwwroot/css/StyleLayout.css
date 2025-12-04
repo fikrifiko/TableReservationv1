@@ -204,56 +204,123 @@ body.layout-global .container {
 }
 
 .modal-content {
-    background-color: #1a1a1a !important;
-    border: 1px solid rgba(212, 175, 55, 0.3) !important;
-    border-radius: 0 !important;
-    color: #e8e8e8;
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+    color: #000000 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2) !important;
 }
 
 .modal-header {
-    border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
-    background: linear-gradient(135deg, #1a1a1a, #0f0f0f) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+    background: transparent !important;
+    padding: 2rem 2rem 1.5rem 2rem !important;
 }
 
 .modal-title {
-    color: #d4af37 !important;
+    color: #000000 !important;
     font-family: 'Playfair Display', serif;
-    font-weight: 700;
+    font-weight: 400 !important;
+    font-size: 1.8rem !important;
+    letter-spacing: 2px !important;
 }
 
 .modal-body {
-    background-color: #1a1a1a;
+    background: transparent !important;
+    padding: 2rem !important;
 }
 
 .form-label {
-    color: #e8e8e8 !important;
-    font-family: 'Cormorant Garamond', serif;
+    color: #333333 !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 1rem !important;
+    letter-spacing: 1px !important;
+    margin-bottom: 0.5rem !important;
 }
 
 .form-control {
-    background-color: #0a0a0a !important;
-    border: 1px solid rgba(212, 175, 55, 0.3) !important;
-    color: #e8e8e8 !important;
-    border-radius: 0 !important;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: #000000 !important;
+    border-radius: 4px !important;
+    padding: 12px 16px !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
 }
 
 .form-control:focus {
-    background-color: #0a0a0a !important;
-    border-color: #d4af37 !important;
-    color: #e8e8e8 !important;
-    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25) !important;
+    background-color: #ffffff !important;
+    border-color: #000000 !important;
+    color: #000000 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    outline: none !important;
 }
 
 .form-text {
-    color: #999 !important;
+    color: #666666 !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 0.85rem !important;
+    font-style: italic !important;
+    margin-top: 0.5rem !important;
 }
 
 .btn-close {
-    filter: invert(1) brightness(0.8);
+    filter: none !important;
+    opacity: 0.6 !important;
+    background: none !important;
+    border: none !important;
+    font-size: 2rem !important;
+    color: #666666 !important;
+    transition: all 0.3s ease !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
 }
 
 .btn-close:hover {
-    filter: invert(1) brightness(1);
+    opacity: 1 !important;
+    color: #000000 !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+    transform: rotate(90deg) !important;
+}
+
+.modal-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
+}
+
+.modal-admin-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    color: #666666;
+    margin-bottom: 0.75rem;
+    font-style: italic;
+}
+
+.btn-admin-link {
+    background: transparent !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    color: #000000 !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    padding: 10px 24px !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+}
+
+.btn-admin-link:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-color: #000000 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
 }
 
 .cookie-banner {
@@ -359,10 +426,58 @@ body.layout-global .container {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
     z-index: 1040;
 }
 
 .modal-overlay.show {
     display: block;
+}
+
+/* Style pour les boutons dans les modals */
+.modal-body .btn-primary {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1px solid #000000 !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 1rem !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    padding: 12px 32px !important;
+    transition: all 0.3s ease !important;
+}
+
+.modal-body .btn-primary:hover {
+    background: #333333 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+.modal-body .btn-secondary {
+    background: transparent !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 1rem !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    padding: 12px 32px !important;
+    transition: all 0.3s ease !important;
+}
+
+.modal-body .btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-color: #000000 !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Alert dans modal */
+.modal-body .alert {
+    background: rgba(220, 53, 69, 0.1) !important;
+    border: 1px solid rgba(220, 53, 69, 0.3) !important;
+    color: #dc3545 !important;
+    border-radius: 4px !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    padding: 1rem !important;
 }

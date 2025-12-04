@@ -1,12 +1,37 @@
-﻿// open modal
+﻿// open modal admin
+function openAdminModal() {
+    const modalElement = document.getElementById("adminModal");
+    if (!modalElement) return;
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
+
+// open modal from layout (if button still exists)
 const btnAdminLogin = document.getElementById("btnAdminLogin");
 if (btnAdminLogin) {
     btnAdminLogin.addEventListener("click", function (event) {
         event.preventDefault();
-        const modalElement = document.getElementById("adminModal");
-        if (!modalElement) return;
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
+        openAdminModal();
+    });
+}
+
+// open modal from client login modal
+const btnAdminLoginFromModal = document.getElementById("btnAdminLoginFromModal");
+if (btnAdminLoginFromModal) {
+    btnAdminLoginFromModal.addEventListener("click", function (event) {
+        event.preventDefault();
+        // Close client modal first
+        const clientModalElement = document.getElementById("clientLoginModal");
+        if (clientModalElement) {
+            const clientModal = bootstrap.Modal.getInstance(clientModalElement);
+            if (clientModal) {
+                clientModal.hide();
+            }
+        }
+        // Open admin modal after a short delay
+        setTimeout(() => {
+            openAdminModal();
+        }, 300);
     });
 }
 
