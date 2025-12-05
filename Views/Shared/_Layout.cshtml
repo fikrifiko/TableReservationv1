@@ -39,7 +39,6 @@
                             var isNlNav = twoLetterNav == "nl";
                         }
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("Menu", "Home")">Menu</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Home/Terms">@(isNlNav ? "Algemene voorwaarden" : "Conditions générales")</a></li>
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Home")#contact">Contact</a></li>
                     </ul>
                     <div class="d-flex align-items-center">
@@ -103,6 +102,23 @@
     <div class="container mt-4 page-elegant" style="padding-top: 100px !important; max-width: 100% !important; width: 100% !important;">
         @RenderBody()
     </div>
+
+    <!-- Footer -->
+    <footer style="background-color: #000000 !important; color: #ffffff !important; padding: 30px 0 !important; margin-top: 50px !important; text-align: center !important; border-top: 1px solid rgba(212, 175, 55, 0.2) !important; position: relative !important; z-index: 100 !important; width: 100% !important; display: block !important; visibility: visible !important;">
+        <div class="container">
+            @{
+                var isNlFooter = (System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLower() ?? "fr") == "nl";
+            }
+            <div style="margin-bottom: 15px !important; display: block !important;">
+                <a href="/Home/Terms" style="color: #ffffff !important; text-decoration: none !important; margin: 0 15px !important; font-family: 'Cormorant Garamond', serif !important; font-size: 1rem !important; display: inline-block !important; visibility: visible !important;">
+                    @(isNlFooter ? "Algemene voorwaarden" : "Conditions générales")
+                </a>
+            </div>
+            <p style="margin: 0 !important; font-family: 'Cormorant Garamond', serif !important; font-size: 0.9rem !important; color: #ffffff !important; display: block !important; visibility: visible !important;">
+                &copy; @DateTime.Now.Year L'Etoile Blanche. @(isNlFooter ? "Alle rechten voorbehouden." : "Tous droits réservés.")
+            </p>
+        </div>
+    </footer>
 
     <!-- MODAL CLIENT -->
     <div id="clientLoginModal" class="modal fade" tabindex="-1" aria-labelledby="clientLoginModalLabel" aria-hidden="true">
