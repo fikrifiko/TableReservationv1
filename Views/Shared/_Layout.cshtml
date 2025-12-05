@@ -1,6 +1,6 @@
 ﻿@* Using explicit culture-based strings to ensure correct display while we stabilize resources *@
 <!DOCTYPE html>
-<html lang="@(System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName ?? "fr")">
+<html lang="@(System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName ?? "fr")" class="page-elegant" style="background: #ffffff !important; background-color: #ffffff !important;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +11,22 @@
 
     <!-- Fichier CSS du layout (séparé du reste) -->
     <link rel="stylesheet" href="~/css/StyleLayout.css">
+    <link rel="stylesheet" href="~/css/ElegantBackground.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<body class="layout-global">
+<body class="layout-global page-elegant" style="background: #ffffff !important; background-color: #ffffff !important; color: #000000 !important;">
 
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/" style="display: flex !important; align-items: center !important; gap: 15px !important; flex-direction: row !important;">
-                    <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" class="logo-img" style="display: inline-block !important; flex-shrink: 0 !important; visibility: visible !important; opacity: 1 !important; width: 50px !important; height: 50px !important; vertical-align: middle !important;"><path d="M25 4 L30.15 17.35 L43.63 17.35 L32.58 25.15 L37.73 38.18 L25 30.3 L12.27 38.18 L17.42 25.15 L6.37 17.35 L19.85 17.35 Z" fill="#ffffff"></svg>
-                    <span class="brand-text" style="display: inline-block !important; vertical-align: middle !important; line-height: normal !important;">L'Etoile Blanche</span>
+                <a class="navbar-brand" href="/" style="display: flex !important; align-items: center !important; gap: 15px !important; flex-direction: row !important; color: #ffffff !important;">
+                    <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" class="logo-img" style="display: inline-block !important; flex-shrink: 0 !important; visibility: visible !important; opacity: 1 !important; width: 50px !important; height: 50px !important; vertical-align: middle !important;">
+                        <path d="M25 4 L30.15 17.35 L43.63 17.35 L32.58 25.15 L37.73 38.18 L25 30.3 L12.27 38.18 L17.42 25.15 L6.37 17.35 L19.85 17.35 Z" 
+                              fill="#ffffff"/>
+                    </svg>
+                    <span class="brand-text" style="display: inline-block !important; vertical-align: middle !important; line-height: normal !important; color: #ffffff !important;">L'Etoile Blanche</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
@@ -33,7 +40,6 @@
                         }
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("Menu", "Home")">Menu</a></li>
                         <li class="nav-item"><a class="nav-link" href="/Home/Terms">@(isNlNav ? "Algemene voorwaarden" : "Conditions générales")</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Home")#locations">@(isNlNav ? "Locaties" : "Emplacements")</a></li>
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Home")#contact">Contact</a></li>
                     </ul>
                     <div class="d-flex align-items-center">
@@ -88,7 +94,13 @@
         </nav>
     </header>
 
-    <div class="container mt-4">
+    <div class="elegant-background">
+        <div class="curved-shape shape-1"></div>
+        <div class="curved-shape shape-2"></div>
+        <div class="curved-shape shape-3"></div>
+    </div>
+
+    <div class="container mt-4 page-elegant" style="padding-top: 100px !important; max-width: 100% !important; width: 100% !important;">
         @RenderBody()
     </div>
 
@@ -196,12 +208,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-

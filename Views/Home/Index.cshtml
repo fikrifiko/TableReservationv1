@@ -1,4 +1,4 @@
-@{
+Ôªø@{
     ViewData["Title"] = "Accueil";
 }
 <!DOCTYPE html>
@@ -25,7 +25,7 @@
     @if (Context.Request.Query["message"] == "deconnected")
     {
         <div class="alert alert-info text-center" role="alert" style="margin: 10px 20px;">
-            Vous avez ÈtÈ dÈconnectÈ.
+            Vous avez √©t√© d√©connect√©.
         </div>
     }
 
@@ -38,9 +38,9 @@
                         <span class="restaurant-brand">L'Etoile Blanche</span>
                     </h1>
                     <div class="title-divider"></div>
-                    <p class="restaurant-tagline">Une expÈrience gastronomique unique</p>
+                    <p class="restaurant-tagline">Une exp√©rience gastronomique unique</p>
                     <div class="hero-buttons">
-                        <a href="/Client/PageReservationClient" class="btn btn-primary btn-reservation">RÈserver une table</a>
+                        <a href="/Client/PageReservationClient" class="btn btn-primary btn-reservation">R√©server une table</a>
                         <a href="#menu-section" class="btn btn-outline-light btn-menu">Notre menu</a>
                     </div>
                 </div>
@@ -52,53 +52,8 @@
     <section id="menu-section" class="content-section">
         <div class="section-container">
             <h2 class="section-title">Notre Menu</h2>
-            <p class="section-description">DÈcouvrez notre carte inspirÈe de la cuisine belge authentique</p>
+            <p class="section-description">D√©couvrez notre carte inspir√©e de la cuisine belge authentique</p>
             <a href="/Home/Menu" class="btn-section">Voir le menu complet</a>
-        </div>
-    </section>
-
-    <!-- Section Emplacements -->
-    <section id="locations" class="content-section">
-        <div class="section-container">
-            <h2 class="section-title">Nos Emplacements</h2>
-            <p class="section-description">Venez nous rendre visite dans notre restaurant au cúur de la ville</p>
-            <div class="locations-grid">
-                <div class="location-card">
-                    <div class="location-icon">??</div>
-                    <h3>Restaurant Principal</h3>
-                    <div class="location-address">
-                        <p><strong>12 Rue Exemple</strong><br>75000 Paris, France</p>
-                    </div>
-                    <div class="location-hours">
-                        <strong>Horaires d'ouverture</strong>
-                        <p>Lundi - Dimanche<br>12h00 - 23h00</p>
-                    </div>
-                    <div class="location-contact">
-                        <p><strong>??</strong> +33 1 23 45 67 89</p>
-                        <p><strong>??</strong> contact@reserva.example</p>
-                    </div>
-                </div>
-                <div class="location-map-container">
-                    <div class="map-wrapper">
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.9916256937604!2d2.292292615674414!3d48.85837007928746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e2964e34e2d%3A0x8ddca9ee380ef7e0!2sTour%20Eiffel!5e0!3m2!1sfr!2sfr!4v1704123456789!5m2!1sfr!2sfr" 
-                            width="100%" 
-                            height="100%" 
-                            style="border:0; border-radius: 8px;" 
-                            allowfullscreen="" 
-                            loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade"
-                            class="elegant-map">
-                        </iframe>
-                    </div>
-                    <div class="map-overlay">
-                        <a href="https://www.google.com/maps/search/12+Rue+Exemple,+75000+Paris,+France" target="_blank" class="map-link">
-                            <span>Voir sur Google Maps</span>
-                            <span>?</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -106,32 +61,32 @@
     <section id="contact" class="content-section">
         <div class="section-container">
             <h2 class="section-title">Contact</h2>
-            <p class="section-description">N'hÈsitez pas ‡ nous contacter pour toute question ou rÈservation</p>
+            <p class="section-description">N'h√©sitez pas √† nous contacter pour toute question ou r√©servation</p>
             <div class="contact-wrapper">
                 <div class="contact-info">
                     <div class="contact-item">
-                        <div class="contact-icon">??</div>
-                        <strong>Email</strong>
-                        <p><a href="mailto:contact@reserva.example">contact@reserva.example</a></p>
-                        <span class="contact-note">RÈponse sous 24h</span>
+                        <div class="contact-icon">üìç</div>
+                        <strong>Adresse</strong>
+                        <p>12 Rue Exemple<br>75000 Paris, France</p>
+                        <span class="contact-note">M√©tro: Ligne 1, 4, 7</span>
                     </div>
                     <div class="contact-item">
-                        <div class="contact-icon">??</div>
-                        <strong>TÈlÈphone</strong>
+                        <div class="contact-icon">üïê</div>
+                        <strong>Horaires</strong>
+                        <p>Lundi - Dimanche<br>12h00 - 23h00</p>
+                        <span class="contact-note">Service continu</span>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">üìû</div>
+                        <strong>T√©l√©phone</strong>
                         <p><a href="tel:+33123456789">+33 1 23 45 67 89</a></p>
                         <span class="contact-note">Lun-Dim, 12h-23h</span>
                     </div>
                     <div class="contact-item">
-                        <div class="contact-icon">??</div>
-                        <strong>Adresse</strong>
-                        <p>12 Rue Exemple<br>75000 Paris, France</p>
-                        <span class="contact-note">MÈtro: Ligne 1, 4, 7</span>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">??</div>
-                        <strong>Horaires</strong>
-                        <p>Lundi - Dimanche<br>12h00 - 23h00</p>
-                        <span class="contact-note">Service continu</span>
+                        <div class="contact-icon">‚úâÔ∏è</div>
+                        <strong>Email</strong>
+                        <p><a href="mailto:contact@etoileblanche.example">contact@etoileblanche.example</a></p>
+                        <span class="contact-note">R√©ponse sous 24h</span>
                     </div>
                 </div>
                 <div class="contact-map-container">
@@ -147,26 +102,32 @@
                             class="elegant-map">
                         </iframe>
                     </div>
+                    <div class="map-overlay">
+                        <a href="https://www.google.com/maps/search/12+Rue+Exemple,+75000+Paris,+France" target="_blank" class="map-link">
+                            <span>Voir sur Google Maps</span>
+                            <span>‚Üí</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section TÈmoignages avec Flammes -->
+    <!-- Section T√©moignages avec Flammes -->
     <section id="testimonials" class="content-section">
         <div class="section-container">
             <h2 class="section-title">Ce que nos clients disent</h2>
-            <p class="section-description">DÈcouvrez les expÈriences de nos convives</p>
+            <p class="section-description">D√©couvrez les exp√©riences de nos convives</p>
             <div class="flames-container">
                 <div class="flame-wrapper">
                     <div class="flame">
                         <div class="flame-heads">
-                            <div class="flame-face face-1">??</div>
-                            <div class="flame-face face-2">??</div>
-                            <div class="flame-face face-3">??</div>
+                            <div class="flame-face face-1">üòä</div>
+                            <div class="flame-face face-2">üòÑ</div>
+                            <div class="flame-face face-3">üòç</div>
                         </div>
                         <div class="flame-content">
-                            <p class="testimonial-text">"Une expÈrience gastronomique exceptionnelle ! Les plats sont dÈlicieux et l'ambiance est chaleureuse."</p>
+                            <p class="testimonial-text">"Une exp√©rience gastronomique exceptionnelle ! Les plats sont d√©licieux et l'ambiance est chaleureuse."</p>
                             <p class="testimonial-author">- Marie D.</p>
                         </div>
                     </div>
@@ -174,12 +135,12 @@
                 <div class="flame-wrapper">
                     <div class="flame">
                         <div class="flame-heads">
-                            <div class="flame-face face-1">??</div>
-                            <div class="flame-face face-2">??</div>
-                            <div class="flame-face face-3">??</div>
+                            <div class="flame-face face-1">ü§©</div>
+                            <div class="flame-face face-2">üòã</div>
+                            <div class="flame-face face-3">ü•∞</div>
                         </div>
                         <div class="flame-content">
-                            <p class="testimonial-text">"Le meilleur restaurant belge de la ville ! Les carbonnades flamandes sont ‡ tomber."</p>
+                            <p class="testimonial-text">"Le meilleur restaurant belge de la ville ! Les carbonnades flamandes sont √† tomber."</p>
                             <p class="testimonial-author">- Jean-Pierre L.</p>
                         </div>
                     </div>
@@ -187,9 +148,9 @@
                 <div class="flame-wrapper">
                     <div class="flame">
                         <div class="flame-heads">
-                            <div class="flame-face face-1">??</div>
-                            <div class="flame-face face-2">??</div>
-                            <div class="flame-face face-3">??</div>
+                            <div class="flame-face face-1">üòé</div>
+                            <div class="flame-face face-2">üòÉ</div>
+                            <div class="flame-face face-3">üòä</div>
                         </div>
                         <div class="flame-content">
                             <p class="testimonial-text">"Service impeccable et cuisine authentique. Nous reviendrons certainement !"</p>
@@ -201,17 +162,17 @@
         </div>
     </section>
 
-    <!-- Section Conditions GÈnÈrales -->
+    <!-- Section Conditions G√©n√©rales -->
     <section id="terms-section" class="content-section">
         <div class="section-container">
-            <h2 class="section-title">Conditions GÈnÈrales</h2>
+            <h2 class="section-title">Conditions G√©n√©rales</h2>
             <p class="section-description">Consultez nos conditions d'utilisation et de vente</p>
             <a href="/Home/Terms" class="btn-section">Lire les conditions</a>
         </div>
     </section>
 
     <footer class="home-footer">
-        <p>&copy; 2025 L'Etoile Blanche. Tous droits rÈservÈs.</p>
+        <p>&copy; 2025 L'Etoile Blanche. Tous droits r√©serv√©s.</p>
     </footer>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
