@@ -57,6 +57,57 @@ namespace Table_Reservation.Services
             }
         }
 
+        public async Task SendNewsletterEmailAsync(string to, string subject, string content, bool isDutch = false)
+        {
+            using (var smtpClient = new SmtpClient(_smtpServer))
+            {
+                smtpClient.Port = _smtpPort;
+                smtpClient.Credentials = new NetworkCredential(_smtpUser, _smtpPass);
+                smtpClient.EnableSsl = true;
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_smtpUser, "L'Etoile Blanche"),
+                    Subject = subject,
+                    Body = GenerateNewsletterEmailBody(content, isDutch),
+                    IsBodyHtml = true
+                };
+
+                mailMessage.To.Add(to);
+
+                await smtpClient.SendMailAsync(mailMessage);
+            }
+        }
+
+        private string GenerateNewsletterEmailBody(string content, bool isDutch)
+        {
+            var sb = new StringBuilder();
+            sb.Append("<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;'>");
+            sb.Append("<div style='text-align: center; margin-bottom: 30px;'>");
+            sb.Append("<h1 style='color: #000000; font-size: 28px; margin: 0;'>L'Etoile Blanche</h1>");
+            sb.Append("</div>");
+            sb.Append("<div style='color: #333333; line-height: 1.6;'>");
+            sb.Append(content);
+            sb.Append("</div>");
+            sb.Append("<div style='margin-top: 40px; padding-top: 20px; border-top: 1px solid #eeeeee; text-align: center; color: #666666; font-size: 12px;'>");
+            if (isDutch)
+            {
+                sb.Append("<p>L'Etoile Blanche Restaurant</p>");
+                sb.Append("<p>12 Rue Exemple, 75000 Paris, France</p>");
+                sb.Append("<p><a href='/Home/Terms' style='color: #666666;'>Algemene voorwaarden</a></p>");
+            }
+            else
+            {
+                sb.Append("<p>L'Etoile Blanche Restaurant</p>");
+                sb.Append("<p>12 Rue Exemple, 75000 Paris, France</p>");
+                sb.Append("<p><a href='/Home/Terms' style='color: #666666;'>Conditions générales</a></p>");
+            }
+            sb.Append("</div>");
+            sb.Append("</div>");
+
+            return sb.ToString();
+        }
+
         private string GenerateReservationEmailBody(ReservationModel reservation)
         {
             var sb = new StringBuilder();

@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
 
     public DbSet<PdfFileModel> PdfFiles { get; set; }
 
+    public DbSet<NewsletterCampaign> NewsletterCampaigns { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

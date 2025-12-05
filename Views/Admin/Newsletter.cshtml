@@ -1,0 +1,137 @@
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Newsletter";
+}
+@{
+    var isDutch = (System.Globalization.CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLowerInvariant() ?? "fr") == "nl";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h1 class="mb-4">@(isDutch ? "Newsletter verzenden" : "Envoyer une newsletter")</h1>
+
+            @if (TempData["NewsletterSuccess"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["NewsletterSuccess"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["NewsletterError"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["NewsletterError"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <form asp-action="SendNewsletter" method="post" id="newsletterForm">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label for="campaignType" class="form-label">@(isDutch ? "Type campagne" : "Type de campagne")</label>
+                    <select class="form-select" id="campaignType" name="campaignType" required>
+                        <option value="Newsletter">@(isDutch ? "Newsletter" : "Newsletter")</option>
+                        <option value="Promotion">@(isDutch ? "Promotie" : "Promotion")</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="subject" class="form-label">@(isDutch ? "Onderwerp" : "Sujet")</label>
+                    <input type="text" class="form-control" id="subject" name="subject" required 
+                           placeholder="@(isDutch ? "Bijv. Nieuwe menu-items!" : "Ex: Nouveaux plats au menu!")">
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label">@(isDutch ? "Inhoud" : "Contenu")</label>
+                    <textarea class="form-control" id="content" name="content" rows="10" required 
+                              placeholder="@(isDutch ? "Schrijf hier uw nieuwsbrief of promotie..." : "Écrivez ici votre newsletter ou promotion...")"></textarea>
+                    <small class="form-text text-muted">@(isDutch ? "HTML is toegestaan" : "HTML est autorisé")</small>
+                </div>
+
+                <div id="promotionFields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="couponCode" class="form-label">@(isDutch ? "Promotiecode" : "Code promo")</label>
+                        <input type="text" class="form-control" id="couponCode" name="couponCode" 
+                               placeholder="@(isDutch ? "Bijv. PROMO2025" : "Ex: PROMO2025")">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="discountPercentage" class="form-label">@(isDutch ? "Kortingspercentage" : "Pourcentage de réduction")</label>
+                        <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" 
+                               min="0" max="100" step="0.01" placeholder="@(isDutch ? "Bijv. 15" : "Ex: 15")">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="validUntil" class="form-label">@(isDutch ? "Geldig tot" : "Valable jusqu'au")</label>
+                        <input type="date" class="form-control" id="validUntil" name="validUntil">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        @(isDutch ? "Verzend naar alle klanten" : "Envoyer à tous les clients")
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-lg ms-2" onclick="previewEmail()">
+                        @(isDutch ? "Voorbeeld" : "Aperçu")
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Définir la fonction dans la portée globale
+    window.previewEmail = function() {
+        var subject = document.getElementById('subject').value;
+        var content = document.getElementById('content').value;
+        var campaignType = document.getElementById('campaignType').value;
+        var couponCode = document.getElementById('couponCode').value;
+        var discountPercentage = document.getElementById('discountPercentage').value;
+        var validUntil = document.getElementById('validUntil').value;
+
+        var previewContent = content;
+        if (campaignType === 'Promotion' && couponCode) {
+            var couponInfo = '<div style="background-color: #f0f0f0; padding: 20px; margin: 20px 0; border-radius: 5px; text-align: center;">';
+            couponInfo += '<h3 style="color: #d4af37;">Code promo: <strong>' + couponCode + '</strong></h3>';
+            if (discountPercentage) {
+                couponInfo += '<p style="font-size: 18px;"><strong>' + discountPercentage + '% de réduction</strong></p>';
+            }
+            if (validUntil) {
+                couponInfo += '<p>Valable jusqu\'au: ' + validUntil + '</p>';
+            }
+            couponInfo += '</div>';
+            previewContent = couponInfo + previewContent;
+        }
+
+        var previewWindow = window.open('', '_blank', 'width=800,height=600');
+        if (previewWindow) {
+            previewWindow.document.write('<html><head><title>Aperçu: ' + subject + '</title></head><body style="font-family: Arial, sans-serif; padding: 20px;">');
+            previewWindow.document.write('<h1>' + subject + '</h1>');
+            previewWindow.document.write(previewContent);
+            previewWindow.document.write('</body></html>');
+            previewWindow.document.close();
+        }
+    };
+
+    // Attendre que le DOM soit chargé
+    document.addEventListener('DOMContentLoaded', function() {
+        var campaignTypeSelect = document.getElementById('campaignType');
+        if (campaignTypeSelect) {
+            campaignTypeSelect.addEventListener('change', function() {
+                var promotionFields = document.getElementById('promotionFields');
+                if (promotionFields) {
+                    if (this.value === 'Promotion') {
+                        promotionFields.style.display = 'block';
+                    } else {
+                        promotionFields.style.display = 'none';
+                    }
+                }
+            });
+        }
+    });
+</script>
+

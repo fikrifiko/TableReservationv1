@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] Admin-Panel</title>
+    <title>@ViewData["Title"] - L'Etoile Blanche Admin</title>
 
     <!-- Cache-control admin -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -32,7 +32,13 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" href="/AdminView/Dashboard">Dashboard</a>
+                <a class="navbar-brand fw-bold" href="/AdminView/Dashboard" style="display: flex !important; align-items: center !important; gap: 15px !important; flex-direction: row !important; color: #ffffff !important;">
+                    <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" class="logo-img" style="display: inline-block !important; flex-shrink: 0 !important; visibility: visible !important; opacity: 1 !important; width: 50px !important; height: 50px !important; vertical-align: middle !important;">
+                        <path d="M25 4 L30.15 17.35 L43.63 17.35 L32.58 25.15 L37.73 38.18 L25 30.3 L12.27 38.18 L17.42 25.15 L6.37 17.35 L19.85 17.35 Z" 
+                              fill="#ffffff"/>
+                    </svg>
+                    <span class="brand-text" style="display: inline-block !important; vertical-align: middle !important; line-height: normal !important; color: #ffffff !important;">L'Etoile Blanche - Dashboard</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -44,7 +50,7 @@
                         }
                         <li class="nav-item"><a class="nav-link" href="/AdminView/Reservations">@(isNlAdmin ? "Onze reserveringen" : "Nos Réservations")</a></li>
                         <li class="nav-item"><a class="nav-link" href="/AdminView/Clients">@(isNlAdmin ? "Onze klanten" : "Nos clients")</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Advertentie" : "Pub")</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/AdminView/Newsletter">@(isNlAdmin ? "Newsletter" : "Newsletter")</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">@(isNlAdmin ? "Optie" : "Option")</a></li>
                     </ul>
                     <div class="d-flex">
@@ -82,7 +88,4 @@
 
 </body>
 </html>
-
-
-
 

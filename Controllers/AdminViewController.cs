@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Table_Reservation.Data;
+using Table_Reservation.Models;
 using Table_Reservation.Models.ViewModels;
+using Table_Reservation.Services;
 
 // Auth JWT Admin
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
@@ -16,10 +18,12 @@ using Table_Reservation.Models.ViewModels;
 public class AdminViewController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly IEmailService _emailService;
 
-    public AdminViewController(AppDbContext context)
+    public AdminViewController(AppDbContext context, IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     [HttpGet]
@@ -143,5 +147,119 @@ public class AdminViewController : Controller
         };
 
         return View("~/Views/Admin/Clients.cshtml", viewModel);
+    }
+
+    [HttpGet]
+    public IActionResult Newsletter()
+    {
+        var isDutch = (CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLowerInvariant() ?? "fr") == "nl";
+        return View(isDutch ? "~/Views/Admin/Newsletter.nl.cshtml" : "~/Views/Admin/Newsletter.cshtml");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SendNewsletter(string subject, string content, string campaignType, string? couponCode, decimal? discountPercentage, DateTime? validUntil)
+    {
+        try
+        {
+            var isDutch = (CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLowerInvariant() ?? "fr") == "nl";
+            
+            // Récupérer tous les emails des clients
+            var clientEmails = await _context.ClientModels
+                .Where(c => !string.IsNullOrEmpty(c.ClientEmail))
+                .Select(c => c.ClientEmail)
+                .Distinct()
+                .ToListAsync();
+
+            if (!clientEmails.Any())
+            {
+                TempData["NewsletterError"] = isDutch 
+                    ? "Geen e-mailadressen gevonden om naar te sturen." 
+                    : "Aucune adresse email trouvée pour l'envoi.";
+                return RedirectToAction("Newsletter");
+            }
+
+            // Créer la campagne
+            var campaign = new NewsletterCampaign
+            {
+                Subject = subject,
+                Content = content,
+                CampaignType = campaignType ?? "Newsletter",
+                CouponCode = couponCode,
+                DiscountPercentage = discountPercentage,
+                ValidUntil = validUntil,
+                TotalRecipients = clientEmails.Count,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = User.Identity?.Name ?? "Admin"
+            };
+
+            _context.NewsletterCampaigns.Add(campaign);
+            await _context.SaveChangesAsync();
+
+            // Envoyer les emails
+            int sentCount = 0;
+            int failedCount = 0;
+
+            foreach (var email in clientEmails)
+            {
+                try
+                {
+                    // Ajouter les informations de coupon si c'est une promotion
+                    var emailContent = content;
+                    if (campaignType == "Promotion" && !string.IsNullOrEmpty(couponCode))
+                    {
+                        var couponInfo = isDutch
+                            ? $"<div style='background-color: #f0f0f0; padding: 20px; margin: 20px 0; border-radius: 5px; text-align: center;'><h3 style='color: #d4af37;'>Promotiecode: <strong>{couponCode}</strong></h3>"
+                            : $"<div style='background-color: #f0f0f0; padding: 20px; margin: 20px 0; border-radius: 5px; text-align: center;'><h3 style='color: #d4af37;'>Code promo: <strong>{couponCode}</strong></h3>";
+                        
+                        if (discountPercentage.HasValue)
+                        {
+                            couponInfo += isDutch
+                                ? $"<p style='font-size: 18px;'><strong>{discountPercentage.Value}% korting</strong></p>"
+                                : $"<p style='font-size: 18px;'><strong>{discountPercentage.Value}% de réduction</strong></p>";
+                        }
+                        
+                        if (validUntil.HasValue)
+                        {
+                            couponInfo += isDutch
+                                ? $"<p>Geldig tot: {validUntil.Value:dd/MM/yyyy}</p>"
+                                : $"<p>Valable jusqu'au: {validUntil.Value:dd/MM/yyyy}</p>";
+                        }
+                        
+                        couponInfo += "</div>";
+                        emailContent = couponInfo + emailContent;
+                    }
+
+                    await _emailService.SendNewsletterEmailAsync(email, subject, emailContent, isDutch);
+                    sentCount++;
+                }
+                catch (Exception ex)
+                {
+                    failedCount++;
+                    // Log l'erreur mais continue avec les autres emails
+                    Console.WriteLine($"Erreur lors de l'envoi à {email}: {ex.Message}");
+                }
+            }
+
+            // Mettre à jour la campagne
+            campaign.SentCount = sentCount;
+            campaign.FailedCount = failedCount;
+            campaign.SentAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            TempData["NewsletterSuccess"] = isDutch
+                ? $"Newsletter succesvol verzonden naar {sentCount} ontvanger(s). {failedCount} mislukt."
+                : $"Newsletter envoyée avec succès à {sentCount} destinataire(s). {failedCount} échec(s).";
+
+            return RedirectToAction("Newsletter");
+        }
+        catch (Exception ex)
+        {
+            var isDutch = (CultureInfo.CurrentUICulture?.TwoLetterISOLanguageName?.ToLowerInvariant() ?? "fr") == "nl";
+            TempData["NewsletterError"] = isDutch
+                ? $"Erreur lors de l'envoi: {ex.Message}"
+                : $"Erreur lors de l'envoi: {ex.Message}";
+            return RedirectToAction("Newsletter");
+        }
     }
 }

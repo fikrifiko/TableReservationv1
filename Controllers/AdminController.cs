@@ -105,7 +105,7 @@ public class AdminController : Controller
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTimeOffset.UtcNow.AddSeconds(30)
+                Expires = DateTimeOffset.UtcNow.AddSeconds(2500)
             }
         );
 
