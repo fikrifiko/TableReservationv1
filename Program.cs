@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Table Reservation API", Version = "v1" });
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "L'Etoile Blanche API", Version = "v1" });
     var securityScheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -185,7 +185,24 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.UseHttpsRedirection();
+
+// Configuration des fichiers statiques avec cache désactivé en développement pour le hot reload
 app.UseStaticFiles();
+if (app.Environment.IsDevelopment())
+{
+    app.Use(async (context, next) =>
+    {
+        await next();
+        if (context.Request.Path.StartsWithSegments("/css") || 
+            context.Request.Path.StartsWithSegments("/js") || 
+            context.Request.Path.StartsWithSegments("/Images"))
+        {
+            context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            context.Response.Headers["Pragma"] = "no-cache";
+            context.Response.Headers["Expires"] = "0";
+        }
+    });
+}
 
 // Localization (must run before routing so views pick correct culture)
 var supportedCultures = new[] { "fr-FR", "nl" };

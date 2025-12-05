@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Table_Reservation</RootNamespace>
+    <HotReloadEnabled>true</HotReloadEnabled>
+    <HotReloadProfile>aspnetcore</HotReloadProfile>
   </PropertyGroup>
 
   <ItemGroup>
